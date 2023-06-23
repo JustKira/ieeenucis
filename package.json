@@ -10,6 +10,8 @@
     "btest": "next build && mkdir -p test_build && cp -R ./.next test_build && cd test_build && next start -p 5000"
   },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.0.3",
+    "@radix-ui/react-slot": "^1.0.2",
     "@types/node": "20.3.1",
     "@types/react": "18.2.13",
     "@types/react-dom": "18.2.6",

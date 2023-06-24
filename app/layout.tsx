@@ -1,6 +1,8 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import Navbar from "./Navbar";
+import Providers from "@/lib/Providers";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -18,9 +20,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${poppins.className} dark`}>
-        {children}
-        <Toaster />
+      <body className={`${poppins.className} dark min-h-screen flex flex-col`}>
+        <Providers>
+          <Navbar />
+          {children}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );

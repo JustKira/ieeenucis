@@ -1,14 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -31,10 +24,11 @@ const formSchema = z.object({
   password: z.string().min(6),
 });
 
-function AuthPage() {
+function SignInPage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState<boolean>(false);
   const supabase = createClientComponentClient();
+
   const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -48,7 +42,7 @@ function AuthPage() {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${location.origin}/auth/callback`,
+        redirectTo: `${location.origin}/api/auth/callback`,
       },
     });
     router.refresh();
@@ -90,7 +84,7 @@ function AuthPage() {
   });
 
   return (
-    <div className="flex items-center justify-center flex-grow h-screen">
+    <div className="flex items-center justify-center flex-grow">
       <Card className="p-4 w-[350px]">
         <CardHeader>
           <CardTitle>SIGN IN</CardTitle>
@@ -157,4 +151,4 @@ function AuthPage() {
   );
 }
 
-export default AuthPage;
+export default SignInPage;

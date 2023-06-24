@@ -10,7 +10,7 @@ function layout(props: DashboardLayoutProps) {
   return (
     <div className="flex flex-grow">
       <Sidebar />
-      {children}
+      <div className="flex-grow h-full">{children}</div>
     </div>
   );
 }

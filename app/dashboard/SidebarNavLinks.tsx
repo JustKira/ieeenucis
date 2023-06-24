@@ -18,7 +18,7 @@ function SidebarNavLinks(props: SidebarNavLinks) {
       onClick={(e) => e.stopPropagation()}
       className={`${
         isActive ? "bg-accent" : ""
-      } flex items-center w-full gap-2 p-3 rounded-md`}
+      } flex items-center w-full gap-2 p-3 rounded-md hover:bg-accent/50 transition-all duration-300`}
       href={href}
     >
       {children}

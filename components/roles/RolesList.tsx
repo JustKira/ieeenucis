@@ -43,7 +43,7 @@ function RolesList({
         <LoadWrapper loading={isLoading}>
           <ScrollArea>
             <div className="flex flex-col space-y-4">
-              {data?.map((role, id) => {
+              {data?.list?.map((role, id) => {
                 return (
                   <Button
                     className="items-start justify-start capitalize"

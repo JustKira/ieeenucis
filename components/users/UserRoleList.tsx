@@ -112,7 +112,7 @@ function UserRoleList({ loadValues, onUpdate, selected }: RoleListerProps) {
   return (
     <LoadWrapper loading={isLoading}>
       <div className="flex flex-col space-y-2">
-        {rolesData?.map((role) => (
+        {rolesData?.list?.map((role) => (
           <div
             className="flex justify-between gap-2 w-full items-center pr-8"
             key={role.id}

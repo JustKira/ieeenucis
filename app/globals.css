@@ -95,3 +95,41 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.mdx h1 {
+  @apply font-semibold text-3xl 
+}
+.mdx h2 {
+  @apply font-semibold text-2xl 
+}
+.mdx h3 {
+  @apply font-semibold text-xl 
+}
+.mdx h4 {
+  @apply font-semibold text-lg 
+}
+.mdx h5 {
+  @apply font-semibold text-base 
+}
+.mdx h6 {
+  @apply font-semibold text-sm 
+}
+
+.mdx ul {
+  @apply list-disc my-2
+}
+.mdx ol {
+  @apply list-decimal my-2
+}
+.mdx strong {
+  @apply font-black
+}
+
+.mdx blockquote {
+  @apply border-l-4 p-4 border-blue-500 my-1 bg-blue-50  dark:bg-blue-400/20
+}
+
+.mdx a {
+  @apply text-blue-500 border-b border-transparent hover:border-blue-500 transition-all duration-200
+}

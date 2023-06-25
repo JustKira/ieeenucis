@@ -16,6 +16,8 @@ model User {
     phonenumber String     @unique
     score       Int        @default(0)
     userRole    UserRole[]
+    Task        Task[]
+    UserTask    UserTask[]
 
     @@unique([firstname, lastname])
 }
@@ -33,4 +35,30 @@ model UserRole {
     userId BigInt
     role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
     roleId BigInt
+
+    @@unique([userId, roleId])
+}
+
+model Task {
+    id          BigInt     @id @default(autoincrement())
+    title       String
+    description String
+    points      Int        @default(0)
+    dueDate     DateTime
+    createdAt   DateTime
+    issuer      User       @relation(fields: [issuerId], references: [id])
+    issuerId    BigInt
+    UserTask    UserTask[]
+}
+
+model UserTask {
+    id       BigInt  @id @default(autoincrement())
+    finished Boolean @default(false)
+    approved Boolean @default(true)
+    user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId   BigInt
+    task     Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    taskId   BigInt
+
+    @@unique([userId, taskId])
 }

@@ -15,6 +15,22 @@ export const usersSupaApi = createApi({
     getSingleUser: builder.query<User, number>({
       queryFn: async (args, api, extraOptions, baseQuery) => {
         const supabase = supaClientHandler;
+        if (args === -1) {
+          const { data: userData, error: getUserError } =
+            await supabase.auth.getUser();
+          if (getUserError) {
+            return { error: getUserError };
+          }
+          const { data, error } = await supabase
+            .from("User")
+            .select("*")
+            .eq("uid", userData.user.id)
+            .single();
+          if (error) {
+            return { error: error };
+          }
+          return { data: data };
+        }
         const { data, error } = await supabase
           .from("User")
           .select("*")
@@ -31,7 +47,10 @@ export const usersSupaApi = createApi({
         result ? [{ type: "USERS", arg }, "USERS"] : ["USERS"],
     }),
     getMultipleUsers: builder.query<
-      (User & { UserRole: { Role: { id: number } | null }[] })[],
+      {
+        list: (User & { UserRole: { Role: { id: number } | null }[] })[];
+        count: number;
+      },
       { page: number; perPage: number }
     >({
       queryFn: async (args, api, extraOptions, baseQuery) => {
@@ -39,24 +58,29 @@ export const usersSupaApi = createApi({
         const { page, perPage } = args;
         const start = perPage * page;
         const end = perPage * page + perPage;
-        const { data, error } = await supabase
+        const { data, count, error } = await supabase
           .from("User")
-          .select("*,UserRole(Role(id))")
-          .range(start, end);
+          .select("*,UserRole(Role(id))", { count: "exact" })
+          .order("firstname")
+          .order("lastname")
+          .range(start, end)
+          .limit(args.perPage);
+
         if (error) {
-          return { error: error };
+          return { error };
         }
 
-        return { data: data };
+        return { data: { list: data, count: count || 0 } };
       },
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "USERS" as const, id })),
+              ...result.list.map(({ id }) => ({ type: "USERS" as const, id })),
               "USERS",
             ]
           : ["USERS"],
     }),
+
     createUserRole: builder.mutation<
       any,
       { userId: number; addRoleIds: number[]; removeRoleIds: number[] }

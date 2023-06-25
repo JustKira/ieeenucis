@@ -18,6 +18,7 @@ export default function usePermission() {
     redirectTo?: string
   ) => {
     permissions.push("*");
+    console.log(userPermission);
     const hasPermission = userPermission?.some((permission) =>
       permissions.includes(permission)
     );

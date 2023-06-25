@@ -2,16 +2,16 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
 import { Role, User } from "@/types";
 
-function getUniquePermissions(roles: Omit<Role, "name">[]): string[] {
+export function getPermissions(
+  roles: { Role: Omit<Role, "name"> }[]
+): string[] {
   const permissionsSet = new Set<string>();
 
-  roles?.forEach((roleData) => {
-    const permissions = roleData.permissions;
-    if (permissions && Array.isArray(permissions)) {
-      permissions.forEach((permission) => {
-        if (permission) {
-          permissionsSet.add(permission);
-        }
+  roles.forEach((roleObj) => {
+    const role = roleObj.Role;
+    if (role.permissions) {
+      role.permissions.forEach((permission) => {
+        permissionsSet.add(permission);
       });
     }
   });
@@ -42,26 +42,30 @@ export const rolesSupaApi = createApi({
       providesTags: (result, arg) =>
         result ? [{ type: "ROLES", arg }, "ROLES"] : ["ROLES"],
     }),
-    getRoles: builder.query<Role[], { page: number; perPage: number }>({
+    getRoles: builder.query<
+      { list: Role[]; count: number },
+      { page: number; perPage: number }
+    >({
       queryFn: async (args, api, extraOptions, baseQuery) => {
         const supabase = supaClientHandler;
         const { page, perPage } = args;
         const start = perPage * page;
         const end = perPage * page + perPage;
-        const { data, error } = await supabase
+        const { data, count, error } = await supabase
           .from("Role")
-          .select("*")
-          .range(start, end);
+          .select("*", { count: "exact" })
+          .range(start, end)
+          .limit(perPage);
         if (error) {
           return { error: error };
         }
 
-        return { data: data };
+        return { data: { list: data, count: count || 0 } };
       },
       providesTags: (result, error, arg) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: "ROLES" as const, id })),
+              ...result.list.map(({ id }) => ({ type: "ROLES" as const, id })),
               "ROLES",
             ]
           : ["ROLES"],
@@ -153,9 +157,9 @@ export const rolesSupaApi = createApi({
           return { error: error };
         }
 
-        const rolesData: Omit<Role, "name">[] = data.UserRole as any;
+        const rolesData: { Role: Omit<Role, "name"> }[] = data.UserRole as any;
 
-        return { data: getUniquePermissions(rolesData) || [] };
+        return { data: getPermissions(rolesData) };
       },
     }),
   }),

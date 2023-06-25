@@ -42,7 +42,7 @@ const UserList = ({
   return (
     <LoadWrapper loading={isLoading}>
       <div className="flex flex-col space-y-4">
-        {data?.map((user, id) => {
+        {data?.list?.map((user, id) => {
           return (
             <Button
               className={`flex justify-between gap-2 h-18 w-full items-center pr-8 `}

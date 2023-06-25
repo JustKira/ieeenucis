@@ -3,7 +3,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
 import React, { useState } from "react";
 import SidebarNavLinks from "@/app/dashboard/SidebarNavLinks";
-import { Check, ListChecks, Home, Shield, ShieldAlert } from "lucide-react";
+import {
+  Check,
+  ListChecks,
+  Home,
+  Shield,
+  ShieldAlert,
+  Users2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useBoolDelay from "@/lib/hooks/useBoolDelay";
 
@@ -18,6 +25,7 @@ function Sidebar() {
   }[] = [
     { href: "/dashboard", icon: <Home />, text: "Board", exact: true },
     { href: "/dashboard/roles", icon: <ShieldAlert />, text: "Roles" },
+    { href: "/dashboard/users", icon: <Users2 />, text: "Users" },
     { href: "/dashboard/tasks", icon: <ListChecks />, text: "Tasks" },
   ];
   return (
@@ -28,7 +36,7 @@ function Sidebar() {
     >
       <Card
         onClick={() => setExtend(!extend)}
-        className="fixed h-[92vh] border-0 border-r rounded-none"
+        className="fixed h-[92vh] border-0 border-r rounded-none z-50"
       >
         <nav
           className={`flex flex-col flex-grow h-full items-start m-4 space-y-4 transition-all duration-300 ${

@@ -64,7 +64,7 @@ function ProfileForm() {
 
       if (userData.user) {
         if (userData.user.email) {
-          const { error } = await supabase.from("users").insert({
+          const { error } = await supabase.from("User").insert({
             email: userData.user.email,
             firstname: data.firstname,
             lastname: data.lastname,
@@ -80,6 +80,7 @@ function ProfileForm() {
             });
           } else {
             return toast({
+              variant: "additive",
               title: "Creation Successful",
               description:
                 "Your user profile has been created successfully. You can now browse freely.",

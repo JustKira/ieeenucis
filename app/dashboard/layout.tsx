@@ -8,9 +8,9 @@ interface DashboardLayoutProps {
 function layout(props: DashboardLayoutProps) {
   const { children } = props;
   return (
-    <div className="flex flex-grow">
+    <div className="flex h-full flex-grow">
       <Sidebar />
-      <div className="flex-grow h-full">{children}</div>
+      <div className="flex-grow">{children}</div>
     </div>
   );
 }

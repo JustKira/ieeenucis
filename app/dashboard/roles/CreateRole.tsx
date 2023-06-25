@@ -18,6 +18,9 @@ import PermissionLister from "@/components/roles/PermissionLister";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import supaClientHandler from "@/lib/Supa/SupaClient";
+import { useCreateRoleMutation } from "@/lib/redux/api/rolesSupaApi";
+import { PostgrestError } from "@supabase/supabase-js";
+import { QuickLoader } from "@/components/ui/loaders";
 const FormSchema = z.object({
   name: z
     .string()
@@ -32,28 +35,25 @@ const FormSchema = z.object({
 
 function CreateRole() {
   const { toast } = useToast();
-  const [loading, setLoading] = useState<boolean>();
+  const [createRole, { isLoading, isError, error }] = useCreateRoleMutation();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
   const onSubmit = form.handleSubmit(async (data) => {
-    const supabase = supaClientHandler;
-    setLoading(true);
-    const { error } = await supabase.from("roles").insert({ ...data });
-    if (error) {
-      setLoading(false);
+    createRole(data);
+    if (isError) {
+      const errorMessage = error as PostgrestError;
       return toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
-        description: error?.message,
+        description: errorMessage.message,
       });
     }
     toast({
       variant: "additive",
       title: "Hooray Role is added!!!",
     });
-    setLoading(false);
   });
   return (
     <Card>
@@ -91,7 +91,10 @@ function CreateRole() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Create</Button>
+            <Button type="submit" disabled={isLoading}>
+              <QuickLoader loading={isLoading} />
+              Create
+            </Button>
           </form>
         </Form>
       </CardContent>

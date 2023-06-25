@@ -7,29 +7,30 @@ generator client {
     provider = "prisma-client-js"
 }
 
-model users {
+model User {
     id          BigInt     @id @default(autoincrement())
     uid         String     @unique @db.Uuid
     email       String     @unique
     firstname   String
     lastname    String
     phonenumber String     @unique
-    userRole    userRole[]
+    score       Int        @default(0)
+    userRole    UserRole[]
 
     @@unique([firstname, lastname])
 }
 
-model roles {
+model Role {
     id          BigInt     @id @default(autoincrement())
     name        String     @unique
     permissions String[]
-    userRole    userRole[]
+    userRole    UserRole[]
 }
 
-model userRole {
-    id      BigInt @id @default(autoincrement())
-    user    users  @relation(fields: [usersId], references: [id], onDelete: Cascade)
-    usersId BigInt
-    role    roles  @relation(fields: [rolesId], references: [id], onDelete: Cascade)
-    rolesId BigInt
+model UserRole {
+    id     BigInt @id @default(autoincrement())
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId BigInt
+    role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+    roleId BigInt
 }

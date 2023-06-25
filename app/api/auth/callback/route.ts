@@ -15,8 +15,8 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase.auth.getUser();
 
     if (data.user?.id && !error) {
-      const user = await supabase
-        .from("users")
+      const { data: user } = await supabase
+        .from("User")
         .select()
         .eq("uid", data.user.id);
       if (!user) {

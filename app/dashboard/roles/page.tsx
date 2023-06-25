@@ -1,4 +1,3 @@
-"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 import CreateRole from "./CreateRole";
@@ -19,7 +18,7 @@ function page() {
         <TabsContent value="update">
           <UpdateRole />
         </TabsContent>
-        <TabsContent value="delete">Change your password here.</TabsContent>
+        <TabsContent value="delete">Under Work</TabsContent>
       </Tabs>
     </main>
   );

@@ -1,6 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
 import { Task, UserTask } from "@/types";
+import { convertDateFormat } from "@/lib/helper/dateConverter";
 
 function mergeArraysWithoutDuplicates(
   arr1: number[],
@@ -14,6 +15,7 @@ function mergeArraysWithoutDuplicates(
 export const tasksSupaApi = createApi({
   reducerPath: "tasksSupaApi",
   baseQuery: fakeBaseQuery(),
+  tagTypes: ["UserTask"],
   endpoints: (builder) => ({
     getUsertasks: builder.query<
       { list: Omit<UserTask, "User">[] | null; count: number },
@@ -31,9 +33,33 @@ export const tasksSupaApi = createApi({
           .range(start, end)
           .limit(perPage);
         const _data: Omit<UserTask, "User">[] | null = data as any;
-        console.log(_data);
+
         return { data: { list: _data, count: count || 0 } };
       },
+      providesTags: ["UserTask"],
+    }),
+    getAllUsertasks: builder.query<
+      { list: UserTask[] | null; count: number },
+      { page: number; perPage: number; approved: boolean; finished: boolean }
+    >({
+      queryFn: async (args) => {
+        const { perPage, page, approved, finished } = args;
+        const supabase = supaClientHandler;
+        const start = perPage * page;
+        const end = perPage * page + perPage;
+
+        const { data, count } = await supabase
+          .from("UserTask")
+          .select("*,Task(*,User(*)),User(*)", { count: "exact" })
+          .eq("approved", approved)
+          .eq("finished", finished)
+          .range(start, end)
+          .limit(perPage);
+        const _data: UserTask[] | null = data as any;
+
+        return { data: { list: _data, count: count || 0 } };
+      },
+      providesTags: ["UserTask"],
     }),
     createTask: builder.mutation<
       any,
@@ -79,6 +105,90 @@ export const tasksSupaApi = createApi({
         return { data: null };
       },
     }),
+    taskStatusUpdate: builder.mutation<
+      any,
+      { status: boolean; taskId: number; userId: number }
+    >({
+      queryFn: async (args) => {
+        const supabase = supaClientHandler;
+        const { status, taskId, userId } = args;
+
+        // Update the UserTask with the provided status
+        const { error } = await supabase
+          .from("UserTask")
+          .update({ finished: status })
+          .eq("taskId", taskId)
+          .eq("userId", userId);
+
+        if (error) {
+          return { error: error };
+        }
+
+        return { data: null };
+      },
+      invalidatesTags: ["UserTask"],
+    }),
+    approveTaskFunc: builder.mutation<
+      null,
+      {
+        state: boolean;
+        points: number;
+        id: number;
+        approverId: number;
+        receiverId: number;
+      }
+    >({
+      queryFn: async (arg, api, extraOptions, baseQuery) => {
+        const supabase = supaClientHandler;
+        if (arg.state === false) {
+          const { data, error } = await supabase
+            .from("UserTask")
+            .update({ finished: false })
+            .eq("id", arg.id);
+          if (error) {
+            return { error: error };
+          }
+          return { data: null };
+        }
+
+        const { data, error, statusText } = await supabase
+          .from("UserTask")
+          .update({ approved: true })
+          .eq("id", arg.id);
+
+        if (error) {
+          return { error: error };
+        }
+        const { error: incrementError } = await supabase.rpc("increment", {
+          x: arg.points,
+          row_id: arg.receiverId,
+        });
+        if (incrementError) {
+          return { error: incrementError };
+        }
+
+        const { error: scoreHistoryError } = await supabase
+          .from("ScoreHistory")
+          .insert({
+            ammount: arg.points,
+            date: convertDateFormat(Date.now()),
+            reason: `System has added ${arg.points} points to your account for the approved task. `,
+            receiverId: arg.receiverId,
+            issuerId: arg.approverId,
+          });
+        if (scoreHistoryError) {
+          return { error: scoreHistoryError };
+        }
+        return { data: null };
+      },
+      invalidatesTags: ["UserTask"],
+    }),
   }),
 });
-export const { useCreateTaskMutation, useGetUsertasksQuery } = tasksSupaApi;
+export const {
+  useGetAllUsertasksQuery,
+  useApproveTaskFuncMutation,
+  useCreateTaskMutation,
+  useGetUsertasksQuery,
+  useTaskStatusUpdateMutation,
+} = tasksSupaApi;

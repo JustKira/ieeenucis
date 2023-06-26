@@ -103,7 +103,10 @@ function ProfileForm() {
     <div className="flex items-center justify-center h-screen">
       <Card className="p-4 w-[350px]">
         <CardHeader>
-          <CardTitle>SIGN IN</CardTitle>
+          <CardTitle>Profile</CardTitle>
+          <CardDescription>
+            To access your dashboard, please complete your profile.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

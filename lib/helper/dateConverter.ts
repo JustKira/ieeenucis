@@ -11,7 +11,19 @@ export function convertDateFormat(date: Date | number): string {
   return `${year}-${formattedMonth}-${formattedDay}`;
 }
 
-// Example usage
-const originalDate = new Date(); // Current date
-const convertedDate = convertDateFormat(originalDate);
-console.log(convertedDate);
+export function convertTime(timeStr: string): string {
+  // Parse the input string into a Date object
+  const dateTime = new Date(timeStr);
+
+  // Extract the day, month, and year from the Date object
+  const day = dateTime.getDate();
+  const month = dateTime.getMonth() + 1; // Note: Months are zero-based
+  const year = dateTime.getFullYear();
+
+  // Format the date as "DD-MM-YYYY"
+  const formattedTime = `${day < 10 ? "0" : ""}${day}-${
+    month < 10 ? "0" : ""
+  }${month}-${year}`;
+
+  return formattedTime;
+}

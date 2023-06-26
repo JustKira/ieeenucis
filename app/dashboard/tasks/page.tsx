@@ -5,9 +5,10 @@ import usePermission from "@/lib/hooks/usePermission";
 import GenericUserList from "@/components/generics/GenericUserList";
 import { User } from "@/types";
 import CreateTask from "./CreateTask";
+import ViewTask from "./ViewTask";
+import ApproveTask from "./ApproveTask";
 function TasksPage() {
   const { checkPermission } = usePermission();
-  const [user, setUser] = useState<User | null>(null);
 
   return (
     <main className="flex p-4 space-x-4">
@@ -25,11 +26,16 @@ function TasksPage() {
             <></>
           )}
         </TabsList>
+        <TabsContent value="view">
+          <ViewTask />
+        </TabsContent>
         <TabsContent value="create">
           <CreateTask />
         </TabsContent>
         <TabsContent value="update"></TabsContent>
-        <TabsContent value="delete">Under Work</TabsContent>
+        <TabsContent value="approve">
+          <ApproveTask />
+        </TabsContent>
       </Tabs>
     </main>
   );

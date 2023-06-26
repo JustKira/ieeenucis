@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "btest": "next build && next start"
+    "btest": "next build && next start",
+    "prismaDev": "dotenv -e .env.local prisma migrate dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.1.1",
@@ -56,6 +57,7 @@
   "devDependencies": {
     "@types/marked": "^5.0.0",
     "cypress": "^12.15.0",
+    "dotenv-cli": "^7.2.1",
     "prisma": "^4.16.1"
   }
 }

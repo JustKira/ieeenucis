@@ -8,16 +8,19 @@ generator client {
 }
 
 model User {
-    id          BigInt     @id @default(autoincrement())
-    uid         String     @unique @db.Uuid
-    email       String     @unique
-    firstname   String
-    lastname    String
-    phonenumber String     @unique
-    score       Int        @default(0)
-    userRole    UserRole[]
-    Task        Task[]
-    UserTask    UserTask[]
+    id                   BigInt               @id @default(autoincrement())
+    uid                  String               @unique @db.Uuid
+    email                String               @unique
+    firstname            String
+    lastname             String
+    phonenumber          String               @unique
+    score                Int                  @default(0)
+    userRole             UserRole[]
+    Task                 Task[]
+    UserTask             UserTask[]
+    IssuerScoreHistory   ScoreHistory[]       @relation("issuer_SH")
+    ReceiverScoreHistory ScoreHistory[]       @relation("receiver_SH")
+    OpportunityRequest   OpportunityRequest[]
 
     @@unique([firstname, lastname])
 }
@@ -40,25 +43,63 @@ model UserRole {
 }
 
 model Task {
-    id          BigInt     @id @default(autoincrement())
-    title       String
-    description String
-    points      Int        @default(0)
-    dueDate     DateTime
-    createdAt   DateTime
-    issuer      User       @relation(fields: [issuerId], references: [id])
-    issuerId    BigInt
-    UserTask    UserTask[]
+    id              BigInt            @id @default(autoincrement())
+    title           String
+    description     String
+    points          Int               @default(0)
+    dueDate         DateTime
+    createdAt       DateTime
+    issuer          User              @relation(fields: [issuerId], references: [id])
+    issuerId        BigInt
+    UserTask        UserTask[]
+    OpportunityTask OpportunityTask[]
 }
 
 model UserTask {
     id       BigInt  @id @default(autoincrement())
     finished Boolean @default(false)
-    approved Boolean @default(true)
+    approved Boolean @default(false)
     user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId   BigInt
     task     Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
     taskId   BigInt
 
     @@unique([userId, taskId])
+}
+
+model Opportunity {
+    id                 BigInt               @id @default(autoincrement())
+    title              String
+    description        String
+    deadline           String
+    OpportunityTask    OpportunityTask[]
+    OpportunityRequest OpportunityRequest[]
+}
+
+model OpportunityRequest {
+    id            BigInt      @id @default(autoincrement())
+    opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+    opportunityId BigInt
+    user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId        BigInt
+    approved      Boolean     @default(false)
+}
+
+model OpportunityTask {
+    id            BigInt      @id @default(autoincrement())
+    task          Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    taskId        BigInt
+    opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+    opportunityId BigInt
+}
+
+model ScoreHistory {
+    id         BigInt   @id @default(autoincrement())
+    issuer     User?    @relation("issuer_SH", fields: [issuerId], references: [id], onDelete: SetNull)
+    receiver   User?    @relation("receiver_SH", fields: [receiverId], references: [id], onDelete: Cascade)
+    date       DateTime
+    reason     String?
+    ammount    Int
+    issuerId   BigInt?
+    receiverId BigInt
 }

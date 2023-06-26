@@ -7,19 +7,19 @@ import {
 import Pagination from "../ui/Pagination";
 import { PostgrestError } from "@supabase/supabase-js";
 import { Button } from "../ui/button";
-import { User, UserTask } from "@/types";
-import { useGetUsertasksQuery } from "@/lib/redux/api/tasksSupaApi";
+import { Opportunity, User, UserTask } from "@/types";
 import { convertTime } from "@/lib/helper/dateConverter";
 import { ScrollArea } from "../ui/scroll-area";
+import { useGetOpportunitiesQuery } from "@/lib/redux/api/opportunitiesSupaApi";
 
-const GenericUserTaskList = ({
+const GenericOpportunitiesList = ({
   onClick,
   per,
   singleSelection,
   multipleSelection,
   multiple,
 }: {
-  onClick: (user: Omit<UserTask, "User">) => void;
+  onClick: (opportunity: Opportunity) => void;
   per: number;
   singleSelection?: number | null;
   multipleSelection?: number[];
@@ -27,15 +27,11 @@ const GenericUserTaskList = ({
 }) => {
   const [page, setPage] = useState<number>(0);
   const [trigger, setTrigger] = useState<boolean>(false);
-  const { data: userData } = useGetSingleUserQuery(-1);
-  const { data, isError, isLoading, error } = useGetUsertasksQuery(
-    {
-      userId: userData?.id || -1,
-      page: page,
-      perPage: per,
-    },
-    { skip: userData?.id === undefined }
-  );
+
+  const { data, isError, isLoading, error } = useGetOpportunitiesQuery({
+    page: page,
+    perPage: per,
+  });
 
   useEffect(() => {
     setTrigger(!trigger);
@@ -50,38 +46,31 @@ const GenericUserTaskList = ({
       <div className="flex flex-col flex-grow gap-4">
         <ScrollArea className="h-[58vh]">
           <div className="flex flex-col space-y-4">
-            {data?.list?.map((utask, id) => {
+            {data?.list?.map((opportunity, id) => {
               return (
                 <Button
                   className={`flex justify-between gap-2 h-18 w-full items-center pr-8 `}
                   variant={
                     !multiple
-                      ? singleSelection === utask.id
+                      ? singleSelection === opportunity.id
                         ? "default"
                         : "outline"
-                      : multipleSelection?.includes(utask.id)
+                      : multipleSelection?.includes(opportunity.id)
                       ? "default"
                       : "outline"
                   }
                   key={id}
                   onClick={() => {
-                    onClick(utask);
+                    onClick(opportunity);
                   }}
                 >
                   <div className="flex flex-col items-start justify-start space-y-1">
                     <h1 className="text-base font-medium capitalize">
-                      {utask.Task?.title}
+                      {opportunity.title}
                     </h1>
                     <h2 className="text-xs">
-                      {convertTime(utask.Task?.dueDate || "")}
+                      {convertTime(opportunity.deadline || "")}
                     </h2>
-                    <h1 className="text-xs font-light mt-0.5">
-                      {utask.approved ? (
-                        <>Approved</>
-                      ) : (
-                        <>{utask.finished ? <>Turned In</> : <></>}</>
-                      )}
-                    </h1>
                   </div>
                 </Button>
               );
@@ -100,4 +89,4 @@ const GenericUserTaskList = ({
   );
 };
 
-export default GenericUserTaskList;
+export default GenericOpportunitiesList;

@@ -8,18 +8,32 @@ import Pagination from "../ui/Pagination";
 import { PostgrestError } from "@supabase/supabase-js";
 import { Button } from "../ui/button";
 import { User, UserTask } from "@/types";
-import { useGetUsertasksQuery } from "@/lib/redux/api/tasksSupaApi";
+import {
+  useGetAllUsertasksQuery,
+  useGetUsertasksQuery,
+} from "@/lib/redux/api/tasksSupaApi";
 import { convertTime } from "@/lib/helper/dateConverter";
 import { ScrollArea } from "../ui/scroll-area";
+import { Switch } from "../ui/switch";
+import { Label } from "../ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
-const GenericUserTaskList = ({
+const GenericUserTaskApprovalList = ({
   onClick,
   per,
   singleSelection,
   multipleSelection,
   multiple,
 }: {
-  onClick: (user: Omit<UserTask, "User">) => void;
+  onClick: (user: UserTask) => void;
   per: number;
   singleSelection?: number | null;
   multipleSelection?: number[];
@@ -27,15 +41,14 @@ const GenericUserTaskList = ({
 }) => {
   const [page, setPage] = useState<number>(0);
   const [trigger, setTrigger] = useState<boolean>(false);
-  const { data: userData } = useGetSingleUserQuery(-1);
-  const { data, isError, isLoading, error } = useGetUsertasksQuery(
-    {
-      userId: userData?.id || -1,
-      page: page,
-      perPage: per,
-    },
-    { skip: userData?.id === undefined }
-  );
+  const [finished, setFinished] = useState<boolean>(false);
+  const [approved, setApproved] = useState<boolean>(false);
+  const { data, isError, isLoading, error } = useGetAllUsertasksQuery({
+    page: page,
+    perPage: per,
+    approved: approved,
+    finished: finished,
+  });
 
   useEffect(() => {
     setTrigger(!trigger);
@@ -48,6 +61,47 @@ const GenericUserTaskList = ({
       error={error as PostgrestError}
     >
       <div className="flex flex-col flex-grow gap-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">Filters</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Tasks Status Filter</DialogTitle>
+              <DialogDescription>
+                You can get different tasks by turning the switch on and off.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <Label>Finished</Label>
+                <Switch
+                  checked={finished}
+                  onCheckedChange={(v) => {
+                    setFinished(v);
+                    if (approved === true && v === false) {
+                      setApproved(false);
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label>Approved</Label>
+                <Switch
+                  checked={approved}
+                  onCheckedChange={(v) => {
+                    setApproved(v);
+                    if (finished === false && v === true) {
+                      setFinished(true);
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         <ScrollArea className="h-[58vh]">
           <div className="flex flex-col space-y-4">
             {data?.list?.map((utask, id) => {
@@ -100,4 +154,4 @@ const GenericUserTaskList = ({
   );
 };
 
-export default GenericUserTaskList;
+export default GenericUserTaskApprovalList;

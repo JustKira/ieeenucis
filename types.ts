@@ -37,6 +37,42 @@ export type Task = {
   points: number;
   dueDate: string;
   createdAt: string;
-  readonly issuer: User;
+  readonly User?: User;
   issuerId: number;
+};
+
+export type ScoreHistory = {
+  ammount: number;
+  date: string;
+  id: number;
+  issuerId: number | null;
+  reason: string | null;
+  receiverId: number;
+  readonly User?: User | null;
+};
+
+export type Opportunity = {
+  readonly id: number;
+  title: string;
+  description: string;
+  deadline: string;
+  readonly OpportunityTask?: OpportunityTask[] | null;
+  readonly OpportunityRequest?: OpportunityRequest[] | null;
+};
+
+export type OpportunityRequest = {
+  readonly id: number;
+  readonly Opportunity: Opportunity;
+  opportunityId: number;
+  User: User;
+  userId: number;
+  approved: Boolean;
+};
+
+export type OpportunityTask = {
+  readonly id: number;
+  Task: Task;
+  taskId: number;
+  readonly Opportunity: Opportunity;
+  opportunityId: number;
 };

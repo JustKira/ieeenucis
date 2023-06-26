@@ -1,7 +1,6 @@
 "use client";
 import { format } from "date-fns";
-import GenericRoleList from "@/components/generics/GenericRoleList";
-import GenericUserList from "@/components/generics/GenericUserList";
+
 import {
   Card,
   CardContent,
@@ -16,11 +15,9 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { User } from "@/types";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
@@ -49,30 +46,30 @@ import { QuickLoader } from "@/components/ui/loaders";
 import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
 import { PostgrestError } from "@supabase/supabase-js";
 import { convertDateFormat } from "@/lib/helper/dateConverter";
+import { useCreateOpportunityMutation } from "@/lib/redux/api/opportunitiesSupaApi";
 
 const FormSchema = z.object({
   title: z.string(),
   description: z.string().min(10, {
     message: "description must be at least 10 characters.",
   }),
-  points: z.string(),
-  dueDate: z.date({
+  deadline: z.date({
     required_error: "due date is required.",
   }),
 });
 
-function CreateTask() {
-  const [users, setUsers] = useState<number[]>([]);
-  const [roles, setRoles] = useState<number[]>([]);
+function CreateOpportunity() {
   const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const {
     data: userData,
     isError: isGetUserError,
     error: getUserError,
   } = useGetSingleUserQuery(-1);
-  const [createTask, { isLoading, isError, error }] = useCreateTaskMutation();
+  const [createOpportunity, { isLoading, isError, error }] =
+    useCreateOpportunityMutation();
   const { toast } = useToast();
-  const [description, setDescription] = useState<string>("");
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -89,14 +86,8 @@ function CreateTask() {
   }, [form.watch]);
 
   const onSubmit = form.handleSubmit(async (data) => {
-    console.log(convertDateFormat(data.dueDate));
-    if (users.length === 0 && roles.length === 0) {
-      return toast({
-        variant: "destructive",
-        title: "Uh oh! Something went wrong.",
-        description: "You must select atleast 1 users or 1 roles",
-      });
-    }
+    console.log(convertDateFormat(data.deadline));
+
     if (isGetUserError) {
       const errorMessage = getUserError as PostgrestError;
       return toast({
@@ -106,16 +97,8 @@ function CreateTask() {
       });
     }
     if (userData?.id) {
-      await createTask({
-        task: {
-          ...data,
-          points: Number(data.points),
-          issuerId: userData.id,
-          createdAt: convertDateFormat(Date.now()),
-          dueDate: convertDateFormat(data.dueDate),
-        },
-        rolesId: roles,
-        usersId: users,
+      await createOpportunity({
+        opportunity: { ...data, deadline: convertDateFormat(data.deadline) },
       });
       if (isError) {
         const errorMessage = error as PostgrestError;
@@ -137,9 +120,9 @@ function CreateTask() {
     <div className="flex justify-between gap-4">
       <Card className="w-1/2">
         <CardHeader>
-          <CardTitle>Create Task</CardTitle>
+          <CardTitle>Create Opportunity</CardTitle>
           <CardDescription>
-            add a new task note choose at least a single user or a single role..
+            create Opportunity you will be able to add tasks to it later.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -150,7 +133,7 @@ function CreateTask() {
                 name="title"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Task Title</FormLabel>
+                    <FormLabel>Opportunity Title</FormLabel>
                     <FormControl>
                       <Input placeholder="a super hard task" {...field} />
                     </FormControl>
@@ -164,42 +147,22 @@ function CreateTask() {
                 name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Task Description</FormLabel>
+                    <FormLabel>Opportunity Description</FormLabel>
                     <FormControl>
-                      <Textarea
-                        placeholder="..."
-                        className="resize-none"
-                        {...field}
-                      />
+                      <Textarea placeholder="..." {...field} />
                     </FormControl>
                     <FormDescription>description supports MD.</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
-                name="points"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Points</FormLabel>
-                    <FormControl>
-                      <Input placeholder="0" type="number" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Users who finish tasks and get task administrator approval
-                      will receive points.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dueDate"
+                name="deadline"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>DueDate</FormLabel>
+                    <FormLabel>Deadline</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -244,68 +207,6 @@ function CreateTask() {
                 )}
               />
 
-              <div className="flex gap-4">
-                <Dialog>
-                  <DialogTrigger>
-                    <Button type="button">Users</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Users</DialogTitle>
-                      <DialogDescription>
-                        Choose the users for who you want to assign tasks.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div>
-                      <GenericUserList
-                        per={8}
-                        multipleSelection={users}
-                        multiple
-                        onClick={(user) => {
-                          if (users.includes(user.id)) {
-                            const newUsers = users.filter(
-                              (id) => id !== user.id
-                            );
-                            setUsers(newUsers);
-                          } else {
-                            setUsers([...users, user.id]);
-                          }
-                        }}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-                <Dialog>
-                  <DialogTrigger>
-                    <Button type="button">Roles</Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Users</DialogTitle>
-                      <DialogDescription>
-                        Choose the users for who you want to assign tasks.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div>
-                      <GenericRoleList
-                        per={8}
-                        multipleSelection={roles}
-                        multiple
-                        onClick={(role) => {
-                          if (roles.includes(role.id)) {
-                            const newRoles = roles.filter(
-                              (id) => id !== role.id
-                            );
-                            setRoles(newRoles);
-                          } else {
-                            setRoles([...roles, role.id]);
-                          }
-                        }}
-                      />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              </div>
               <Button type="submit" disabled={isLoading}>
                 <QuickLoader loading={isLoading} />
                 Submit
@@ -318,7 +219,7 @@ function CreateTask() {
         <CardHeader>
           <CardTitle>Preview</CardTitle>
           <CardDescription>
-            this how task will look like on the other users end
+            this how opportunity will look like on the other users end
           </CardDescription>
         </CardHeader>
 
@@ -340,4 +241,4 @@ function CreateTask() {
   );
 }
 
-export default CreateTask;
+export default CreateOpportunity;

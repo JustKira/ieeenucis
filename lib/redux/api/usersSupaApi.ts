@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
-import { Role, User } from "@/types";
+import { Role, ScoreHistory, User } from "@/types";
 import { UserRole } from "../../../types";
 
 interface GetUserRequest extends User {
@@ -127,6 +127,34 @@ export const usersSupaApi = createApi({
       },
       invalidatesTags: (result, error, args) =>
         result ? [{ type: "USERS", userId: args.userId }, "USERS"] : ["USERS"],
+    }),
+    getUserScoreHistory: builder.query<
+      { ScoreHistory: ScoreHistory | null }[] | null,
+      void
+    >({
+      queryFn: async (arg, api, extraOptions, baseQuery) => {
+        const supabase = supaClientHandler;
+        const { data: userData, error: getUserError } =
+          await supabase.auth.getUser();
+        if (getUserError) {
+          return { error: getUserError };
+        }
+        const { data, error } = await supabase
+          .from("User")
+          .select(
+            "ScoreHistory!ScoreHistory_receiverId_fkey(*,User!ScoreHistory_issuerId_fkey(*))"
+          )
+          .eq("uid", userData.user.id)
+          .single();
+        if (error) {
+          return { error: error };
+        }
+
+        const _data: { ScoreHistory: ScoreHistory | null }[] | null =
+          data.ScoreHistory as any;
+
+        return { data: _data || [] };
+      },
     }),
   }),
 });

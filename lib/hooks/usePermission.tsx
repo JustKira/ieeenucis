@@ -10,6 +10,7 @@ export default function usePermission() {
     error,
   } = useGetUserPermissionsQuery();
   const { push } = useRouter();
+
   const checkPermission = (
     permissions: string[],
     allowedComponent: JSX.Element,
@@ -18,10 +19,11 @@ export default function usePermission() {
     redirectTo?: string
   ) => {
     permissions.push("*");
-    console.log(userPermission);
+
     const hasPermission = userPermission?.some((permission) =>
       permissions.includes(permission)
     );
+
     if (hasPermission) {
       return <>{allowedComponent}</>;
     } else {

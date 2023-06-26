@@ -93,7 +93,7 @@ function ViewOpportunity() {
     <div className="flex flex-grow gap-2">
       <Card className="sticky top-0 w-1/4 h-full">
         <CardHeader>
-          <CardTitle>Tasks List</CardTitle>
+          <CardTitle>Opportunity List</CardTitle>
           <CardDescription>...</CardDescription>
         </CardHeader>
 

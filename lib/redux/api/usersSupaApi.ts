@@ -2,6 +2,7 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
 import { Role, ScoreHistory, User } from "@/types";
 import { UserRole } from "../../../types";
+import { convertDateFormat } from "@/lib/helper/dateConverter";
 
 interface GetUserRequest extends User {
   UserRole: Omit<UserRole, "id" | "user">[];
@@ -128,6 +129,37 @@ export const usersSupaApi = createApi({
       invalidatesTags: (result, error, args) =>
         result ? [{ type: "USERS", userId: args.userId }, "USERS"] : ["USERS"],
     }),
+    editUserScore: builder.mutation<
+      any,
+      { ammount: number; reason: string; receiver: number; issuer: number }
+    >({
+      queryFn: async (args, api, extraOptions, baseQuery) => {
+        const supabase = supaClientHandler;
+        const { data, error } = await supabase.from("ScoreHistory").insert({
+          ammount: args.ammount,
+          date: convertDateFormat(Date.now()),
+          reason: args.reason,
+          receiverId: args.receiver,
+          issuerId: args.issuer,
+        });
+
+        if (error) {
+          return { error: error };
+        }
+        const { error: incrementError } = await supabase.rpc("increment", {
+          x: args.ammount,
+          row_id: args.receiver,
+        });
+        if (incrementError) {
+          return { error: incrementError };
+        }
+        return { data: data };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: "USERS", id: arg.receiver },
+        "USERS",
+      ],
+    }),
     getUserScoreHistory: builder.query<
       { ScoreHistory: ScoreHistory | null }[] | null,
       void
@@ -160,6 +192,7 @@ export const usersSupaApi = createApi({
 });
 export const {
   useGetMultipleUsersQuery,
+  useEditUserScoreMutation,
   useGetSingleUserQuery,
   useCreateUserRoleMutation,
 } = usersSupaApi;

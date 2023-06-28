@@ -5,7 +5,7 @@ export const Main = () => {
   return (
     <div className="flex flex-col py-12 space-y-4">
       <h1 className="text-5xl font-bold">WHO WE ARE</h1>
-      <p className="font-light leading-relaxed">
+      <p className="text-sm font-light leading-relaxed">
         IEEENU CIS is a student chapter that was founded near the end of 2021 as
         the second student chapter from the IEEENU Student Branch. It was a club
         founded on the premise of spreading knowledge and awareness about
@@ -31,7 +31,7 @@ export const Main = () => {
       <div className="flex flex-col space-y-4">
         <Card className="flex flex-col p-4 space-y-2">
           <h1 className="text-xl font-semibold">Dealing with Data:</h1>
-          <p className="font-light leading-relaxed">
+          <p className="text-sm font-light leading-relaxed">
             job candidate should be able to handle the input, retrieval,
             cleaning, and wrangling of data into a usable format for the next
             stage of modeling. i.e. SQL, data engineering, data exploration,
@@ -40,7 +40,7 @@ export const Main = () => {
         </Card>
         <Card className="flex flex-col p-4 space-y-2">
           <h1 className="text-xl font-semibold">Knowledge of the Practice:</h1>
-          <p className="font-light leading-relaxed">
+          <p className="text-sm font-light leading-relaxed">
             job candidate should be able to create, formulate, and tune systems
             involving computational intelligence i.e. ML and DL models, fuzzy
             logic controllers, expert systems, etc
@@ -48,14 +48,14 @@ export const Main = () => {
         </Card>
         <Card className="flex flex-col p-4 space-y-2">
           <h1 className="text-xl font-semibold">Data Visualization:</h1>
-          <p className="font-light leading-relaxed">
+          <p className="text-sm font-light leading-relaxed">
             job candidate should be able to properly visualize and communicate
             his findings and results to non-technical stakeholders.
           </p>
         </Card>
       </div>
       <Separator />
-      <p className="font-light leading-relaxed">
+      <p className="text-sm font-light leading-relaxed">
         Members of the club are exposed to activities that aim to improve one or
         more of these aspects. In the beginning, members are exposed to a
         training period of 4-5 weeks which aims to teach them about the basic
@@ -105,7 +105,7 @@ export const ClubActivites = () => {
   return (
     <div className="flex flex-col py-12 space-y-4">
       <h1 className="text-5xl font-bold">Club Activities</h1>
-      <p className="font-light leading-relaxed">
+      <p className="text-sm font-light leading-relaxed">
         As a general rule in the club, during every week, every member has the
         full freedom to choose whichever activities he/she would like to
         participate in. This allows full flexibility for members to be able to
@@ -113,7 +113,7 @@ export const ClubActivites = () => {
         than getting burned out. This allows them to be able to pick and choose
         the activities for the week that best suit their time schedule.
       </p>
-      <p className="font-light leading-relaxed">
+      <p className="text-sm font-light leading-relaxed">
         However, each activity in the club adds points to the participating
         member's score. These points are then what represent this member's{" "}
         <strong>activity/contribution</strong> to the club, and these points are
@@ -124,7 +124,7 @@ export const ClubActivites = () => {
 
       <Card className="flex flex-col p-4 space-y-2">
         <h1 className="text-xl font-semibold">Kaggle Competitions</h1>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           Kaggle Competitions are the bread and butter of the club's practice.
           Each week, a new dataset is presented to members as they compete
           against each other to gain the highest score on the leaderboard. After
@@ -133,7 +133,7 @@ export const ClubActivites = () => {
           data exploration, the readability of their work, and the inference
           time of their models.
         </p>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           This particular activity boosts members' ability to{" "}
           <strong>deal with different types of data</strong>, as members are
           asked to explore their targeted data and learn how to deal with
@@ -146,7 +146,7 @@ export const ClubActivites = () => {
           organize their work and present it in an acceptable manner and
           properly visualize their data and modeling.
         </p>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           This activity starts as individuals, but as members get more adept and
           familiar with the system, they are organized into teams for a
           multitude of reasons:
@@ -164,14 +164,14 @@ export const ClubActivites = () => {
       </Card>
       <Card className="flex flex-col p-4 space-y-2">
         <h1 className="text-xl font-semibold">Variety Tournaments</h1>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           In the weekend of every week, we host a variety event. Variety events
           include any coding activity/game that is not our usual kaggle
           competition. These activities promote adaptability, problem-solving,
           and competitiveness. There is not one particular activity but for the
           sake of example, Battlesnake is explained here:
         </p>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           Battlesnake tournaments are tournaments conducted on the online
           battlesnake platform as members attempt to build the "smartest" snake
           to win it all. Snakes are basically web servers that act as
@@ -195,7 +195,7 @@ export const ClubActivites = () => {
 
       <Card className="flex flex-col p-4 space-y-2">
         <h1 className="text-xl font-semibold">Problem Solving</h1>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           During every week, a codeforces problem sheet is prepared by our
           Problem Solving Committee and made available to our members. This is
           not a problem-solving club, so this sheet is not meant to teach
@@ -205,7 +205,7 @@ export const ClubActivites = () => {
           the most, and we even add a bit of flavor to the questions by trying,
           as much as we can, to make them related to AI engineering problems.
         </p>
-        <p className="font-light leading-relaxed">
+        <p className="text-sm font-light leading-relaxed">
           The sheet has ramping difficulty so as to pose a challenge for some
           members and be a fun weekly puzzle for others who just want to get
           familiar with problem-solving basics.
@@ -221,7 +221,7 @@ export const ClubCommittess = () => {
       <h1 className="text-5xl font-bold">Club Committees</h1>
       <>
         <Card className="flex flex-col p-4 space-y-2">
-          <p className="font-light leading-relaxed">
+          <p className="text-sm font-light leading-relaxed">
             After a 2-3 weeks of the competition cycle, members can enter one of
             6 committees to help give back to the club and keep the wheel
             running. These committees are the Trainers, Kagglers, Variety,
@@ -231,9 +231,8 @@ export const ClubCommittess = () => {
             did and, in doing so, improve the system and the learning
             environment.
           </p>
-        </Card>{" "}
-        <Card className="flex flex-col p-4 space-y-2">
-          <p className="font-light leading-relaxed">
+          <Separator />
+          <p className="text-sm font-light leading-relaxed">
             Trainers are responsible for the main training period in the
             beginning and also for supervising any course content instructed in
             the club. After that, in the competition cycle, Kagglers and Variety
@@ -252,9 +251,8 @@ export const ClubCommittess = () => {
             problem sheets mentioned previously and also contributes to the
             Problem Solving for AI playlist.
           </p>
-        </Card>{" "}
-        <Card className="flex flex-col p-4 space-y-2">
-          <p className="font-light leading-relaxed">
+          <Separator />
+          <p className="text-sm font-light leading-relaxed">
             Through this journey, in addition to the main 3 job-related goals we
             envision, we also target many other interpersonal and soft skills
             that members pick up during their time in the club. These include
@@ -267,9 +265,8 @@ export const ClubCommittess = () => {
             pursue academia in the future or enhance their general ability to
             work within teams.
           </p>{" "}
-        </Card>{" "}
-        <Card className="flex flex-col p-4 space-y-2">
-          <p className="font-light leading-relaxed">
+          <Separator />
+          <p className="text-sm font-light leading-relaxed">
             At the end of the year, members who are at the top of the score
             leaderboard are presented with job recommendations for various AI
             jobs. These recommendations come from the club chair and from

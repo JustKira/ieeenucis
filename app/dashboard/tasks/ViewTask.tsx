@@ -68,7 +68,7 @@ function ViewTask() {
         </CardContent>
       </Card>
 
-      <Card className="w-full relative border-0 h-[52vh]">
+      <Card className="relative w-full border-0">
         <CardHeader>
           <CardTitle className="text-5xl font-light">
             {task?.Task?.title}

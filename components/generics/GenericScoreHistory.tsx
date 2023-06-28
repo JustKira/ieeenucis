@@ -76,7 +76,7 @@ const GenericScoreHistory = ({
                     <h3 className="flex items-center gap-1 text-xs font-light opacity-50">
                       <User2 size={12} />
                       {scorehistory.User?.firstname}
-                      {scorehistory.User?.firstname}
+                      {scorehistory.User?.lastname}
                     </h3>
                   </div>
                 </Button>

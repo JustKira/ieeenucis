@@ -108,7 +108,7 @@ function ViewOpportunity() {
         </CardContent>
       </Card>
 
-      <Card className="w-3/4 relative border-0 h-[52vh]">
+      <Card className="relative w-3/4 border-0">
         <CardHeader>
           <CardTitle className="text-5xl font-light">
             {opportunity?.title}

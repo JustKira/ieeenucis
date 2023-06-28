@@ -61,10 +61,10 @@ const UserList = ({
               onClick={() => onClick(user)}
             >
               <div className="flex flex-col items-start justify-start space-y-1">
-                <h1 className="text-sm font-black capitalize">
-                  {user.firstname}
+                <h1 className="text-sm font-light capitalize">
+                  {user.firstname} {user.lastname}
                 </h1>
-                <h1 className="text-xs font-black capitalize">{user.email}</h1>
+                <h1 className="text-xs font-medium capitalize">{user.email}</h1>
                 <h2 className="text-xs font-light capitalize text-primary/85">
                   score {user.score}
                 </h2>

@@ -137,16 +137,6 @@ function Sidebar() {
               );
             })}
           </div>
-          <div className="flex items-center justify-center w-10 h-10">
-            <Button variant={"outline"} className="w-10 h-10">
-              <Link
-                href={"/auth/signout"}
-                className="flex items-center justify-center"
-              >
-                <Lock size={20} />
-              </Link>
-            </Button>
-          </div>
         </nav>
       </Card>
     </div>

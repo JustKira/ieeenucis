@@ -25,6 +25,7 @@ function SignOutPage() {
         action: <ToastAction altText="try again">try again</ToastAction>,
       });
     }
+    window.location.reload();
     setLoading(false);
   };
 

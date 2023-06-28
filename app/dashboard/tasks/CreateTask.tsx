@@ -258,7 +258,7 @@ function CreateTask() {
                     </DialogHeader>
                     <div>
                       <GenericUserList
-                        per={8}
+                        per={6}
                         multipleSelection={users}
                         multiple
                         onClick={(user) => {
@@ -288,7 +288,7 @@ function CreateTask() {
                     </DialogHeader>
                     <div>
                       <GenericRoleList
-                        per={8}
+                        per={6}
                         multipleSelection={roles}
                         multiple
                         onClick={(role) => {

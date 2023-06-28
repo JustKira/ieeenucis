@@ -27,8 +27,8 @@ function ViewTask() {
   ] = useTaskStatusUpdateMutation();
   const [task, setTasks] = useState<Omit<UserTask, "User"> | null>();
 
-  const UpdateTask = (status: boolean, taskId: number, userId: number) => {
-    updateTaskStatus({ status: status, taskId: taskId, userId: userId });
+  const UpdateTask = (status: boolean, taskId: number) => {
+    updateTaskStatus({ status: status, taskId: taskId });
     if (updateTaskIsError) {
       const errorMessage = error as PostgrestError;
       return toast({
@@ -103,7 +103,7 @@ function ViewTask() {
               ) : task?.finished ? (
                 <Button
                   onClick={() => {
-                    UpdateTask(false, task.id, data.id);
+                    UpdateTask(false, task.id);
                   }}
                   disabled={updateTaskIsloading}
                 >
@@ -113,7 +113,7 @@ function ViewTask() {
               ) : (
                 <Button
                   onClick={() => {
-                    UpdateTask(true, task.id, data.id);
+                    UpdateTask(true, task.id);
                   }}
                   disabled={updateTaskIsloading}
                 >

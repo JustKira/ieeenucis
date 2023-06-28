@@ -1,5 +1,5 @@
 "use c;oemt";
-import React from "react";
+import React, { useState } from "react";
 import {
   Card,
   CardContent,
@@ -16,6 +16,7 @@ import { Terminal } from "lucide-react";
 import { User, UserRole } from "@/types";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import Pagination from "../ui/Pagination";
 
 const UserList = ({
   onClick,
@@ -24,9 +25,10 @@ const UserList = ({
   onClick: (a: User & { UserRole: { Role: { id: number } | null }[] }) => void;
   selected?: (User & { UserRole: { Role: { id: number } | null }[] }) | null;
 }) => {
+  const [page, setPage] = useState<number>(0);
   const { data, isLoading, isError, error } = useGetMultipleUsersQuery({
-    page: 0,
-    perPage: 100,
+    page: page,
+    perPage: 10,
   });
 
   if (isError) {
@@ -42,6 +44,14 @@ const UserList = ({
   return (
     <LoadWrapper loading={isLoading}>
       <div className="flex flex-col space-y-4">
+        {" "}
+        <Pagination
+          per={10}
+          count={data?.count || null}
+          paginationTrigger={(value) => {
+            setPage(value - 1);
+          }}
+        />
         {data?.list?.map((user, id) => {
           return (
             <Button
@@ -50,12 +60,12 @@ const UserList = ({
               key={id}
               onClick={() => onClick(user)}
             >
-              <div className="flex flex-col justify-start items-start space-y-1">
-                <h1 className="text-sm capitalize font-black">
+              <div className="flex flex-col items-start justify-start space-y-1">
+                <h1 className="text-sm font-black capitalize">
                   {user.firstname}
                 </h1>
-                <h1 className="text-xs capitalize font-black">{user.email}</h1>
-                <h2 className="text-xs font-light text-primary/85 capitalize">
+                <h1 className="text-xs font-black capitalize">{user.email}</h1>
+                <h2 className="text-xs font-light capitalize text-primary/85">
                   score {user.score}
                 </h2>
               </div>

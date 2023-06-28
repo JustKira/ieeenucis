@@ -36,7 +36,7 @@ const GenericUserList = ({
       isLoading={isLoading}
       error={error as PostgrestError}
     >
-      <div className="flex flex-col gap-4 flex-grow">
+      <div className="flex flex-col flex-grow gap-4">
         <div className="flex flex-col space-y-4">
           {data?.list?.map((user, id) => {
             return (
@@ -56,11 +56,11 @@ const GenericUserList = ({
                   onClick(user);
                 }}
               >
-                <div className="flex flex-col justify-start items-start space-y-1">
-                  <h1 className="text-base capitalize font-bold">
-                    {user.firstname}
+                <div className="flex flex-col items-start justify-start space-y-1">
+                  <h1 className="text-base font-bold capitalize">
+                    {user.firstname} {user.lastname}
                   </h1>
-                  <h1 className="text-xs capitalize font-light">
+                  <h1 className="text-xs font-light capitalize">
                     {user.email}
                   </h1>
                   <h2 className="text-xs font-light capitalize">

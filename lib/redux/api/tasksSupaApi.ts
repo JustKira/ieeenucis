@@ -107,18 +107,17 @@ export const tasksSupaApi = createApi({
     }),
     taskStatusUpdate: builder.mutation<
       any,
-      { status: boolean; taskId: number; userId: number }
+      { status: boolean; taskId: number }
     >({
       queryFn: async (args) => {
         const supabase = supaClientHandler;
-        const { status, taskId, userId } = args;
+        const { status, taskId } = args;
 
         // Update the UserTask with the provided status
         const { error } = await supabase
           .from("UserTask")
           .update({ finished: status })
-          .eq("taskId", taskId)
-          .eq("userId", userId);
+          .eq("id", taskId);
 
         if (error) {
           return { error: error };

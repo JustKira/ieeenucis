@@ -24,12 +24,16 @@ export const opportunitiesSupaApi = createApi({
         }
         const { data, count } = await supabase
           .from("Opportunity")
-          .select("*,OpportunityRequest(User(*)),OpportunityTask(Task(*))", {
-            count: "exact",
-          })
+          .select(
+            "*,OpportunityRequest(User!inner(*)),OpportunityTask(Task(*))",
+            {
+              count: "exact",
+            }
+          )
           .eq("OpportunityRequest.User.uid", userData.user.id)
           .range(start, end)
           .limit(perPage);
+        console.log(data);
         const _data: Opportunity[] | null = data as any;
 
         return { data: { list: _data, count: count || 0 } };

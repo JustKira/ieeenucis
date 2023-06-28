@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
 
 import { useGetRolesQuery } from "@/lib/redux/api/rolesSupaApi";
@@ -6,6 +6,7 @@ import { LoadWrapper } from "../ui/loaders";
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert";
 import { Terminal } from "lucide-react";
 import { Switch } from "../ui/switch";
+import Pagination from "../ui/Pagination";
 
 interface RoleListerProps {
   loadValues?: number[] | null;
@@ -70,12 +71,13 @@ const reducer = (state: State, action: Action): State => {
 };
 
 function UserRoleList({ loadValues, onUpdate, selected }: RoleListerProps) {
+  const [page, setPage] = useState<number>(0);
   const {
     data: rolesData,
     isLoading,
     isError,
     error,
-  } = useGetRolesQuery({ page: 0, perPage: 100 });
+  } = useGetRolesQuery({ page: page, perPage: 10 });
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
@@ -112,9 +114,16 @@ function UserRoleList({ loadValues, onUpdate, selected }: RoleListerProps) {
   return (
     <LoadWrapper loading={isLoading}>
       <div className="flex flex-col space-y-2">
+        <Pagination
+          per={10}
+          count={rolesData?.count || null}
+          paginationTrigger={(value) => {
+            setPage(value - 1);
+          }}
+        />
         {rolesData?.list?.map((role) => (
           <div
-            className="flex justify-between gap-2 w-full items-center pr-8"
+            className="flex items-center justify-between w-full gap-2 pr-8"
             key={role.id}
           >
             <div className="flex flex-col">

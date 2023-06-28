@@ -97,7 +97,7 @@ function ViewTask() {
               <></>
             )}
 
-            <div className="fixed bottom-4">
+            <div className="">
               {task?.approved ? (
                 <>Task has been Approved</>
               ) : task?.finished ? (

@@ -161,31 +161,33 @@ export const usersSupaApi = createApi({
       ],
     }),
     getUserScoreHistory: builder.query<
-      { ScoreHistory: ScoreHistory | null }[] | null,
-      void
+      {
+        list: ScoreHistory[];
+        count: number;
+      } | null,
+      { page: number; perPage: number; userId: number }
     >({
-      queryFn: async (arg, api, extraOptions, baseQuery) => {
+      queryFn: async (args, api, extraOptions, baseQuery) => {
         const supabase = supaClientHandler;
-        const { data: userData, error: getUserError } =
-          await supabase.auth.getUser();
-        if (getUserError) {
-          return { error: getUserError };
-        }
-        const { data, error } = await supabase
-          .from("User")
-          .select(
-            "ScoreHistory!ScoreHistory_receiverId_fkey(*,User!ScoreHistory_issuerId_fkey(*))"
-          )
-          .eq("uid", userData.user.id)
-          .single();
+        const { page, perPage, userId } = args;
+        const start = perPage * page;
+        const end = perPage * page + perPage;
+
+        const { data, error, count } = await supabase
+          .from("ScoreHistory")
+          .select("*,User!ScoreHistory_issuerId_fkey(*)", { count: "exact" })
+          .eq("receiverId", userId)
+          .range(start, end)
+          .limit(perPage);
+
         if (error) {
           return { error: error };
         }
+        console.log(data);
+        // const _data: { ScoreHistory: ScoreHistory | null }[] | null =
+        //   data as any;
 
-        const _data: { ScoreHistory: ScoreHistory | null }[] | null =
-          data.ScoreHistory as any;
-
-        return { data: _data || [] };
+        return { data: { list: data, count: count || 0 } };
       },
     }),
   }),
@@ -195,4 +197,5 @@ export const {
   useEditUserScoreMutation,
   useGetSingleUserQuery,
   useCreateUserRoleMutation,
+  useGetUserScoreHistoryQuery,
 } = usersSupaApi;

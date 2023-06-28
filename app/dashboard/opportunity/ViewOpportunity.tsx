@@ -158,7 +158,7 @@ function ViewOpportunity() {
                 );
               })}
             </div>
-            <div className="fixed bottom-4">
+            <div className="">
               {opportunity?.OpportunityRequest ? (
                 <>
                   {" "}

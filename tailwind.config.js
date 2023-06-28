@@ -73,6 +73,12 @@ module.exports = {
           to: { height: 0 },
         },
       },
+      dropShadow: {
+        "lg-dark": [
+          "0 10px 8px rgba(7, 30, 85, 0.075)",
+          "0 4px 3px rgba(7, 30, 85, 0.075)",
+        ],
+      },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",

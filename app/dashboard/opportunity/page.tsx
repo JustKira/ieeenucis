@@ -5,6 +5,7 @@ import CreateOpportunity from "./CreateOpportunity";
 import ViewOpportunity from "./ViewOpportunity";
 import CreateOpportunityTask from "./CreateOpportunityTask";
 import usePermission from "@/lib/hooks/usePermission";
+import ApproveOpportunity from "./ApproveOpportunity";
 
 function page() {
   const { checkPermission } = usePermission();
@@ -17,8 +18,7 @@ function page() {
             ["admin_opportunity"],
             <>
               <TabsTrigger value="create">Create</TabsTrigger>
-              <TabsTrigger value="update">Update</TabsTrigger>
-              <TabsTrigger value="delete">Delete</TabsTrigger>
+              <TabsTrigger value="approve">Approve</TabsTrigger>
             </>,
             <></>
           )}
@@ -42,7 +42,9 @@ function page() {
             </Tabs>
           </main>
         </TabsContent>
-        <TabsContent value="update"></TabsContent>
+        <TabsContent value="approve">
+          <ApproveOpportunity />
+        </TabsContent>
         <TabsContent value="delete">Under Work</TabsContent>
       </Tabs>
     </main>

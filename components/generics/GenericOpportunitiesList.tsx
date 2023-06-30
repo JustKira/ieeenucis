@@ -71,7 +71,7 @@ const GenericOpportunitiesList = ({
                 }}
               >
                 <div className="flex flex-col items-start justify-start space-y-1">
-                  <h1 className="text-base font-medium capitalize">
+                  <h1 className="text-base font-medium capitalize text-start">
                     {opportunity.title}
                   </h1>
                   <h2 className="text-xs">

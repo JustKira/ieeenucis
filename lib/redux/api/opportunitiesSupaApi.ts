@@ -1,6 +1,6 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
-import { Opportunity, Task } from "@/types";
+import { Opportunity, OpportunityRequest, Task } from "@/types";
 import { convertDateFormat } from "@/lib/helper/dateConverter";
 
 export const opportunitiesSupaApi = createApi({
@@ -33,7 +33,7 @@ export const opportunitiesSupaApi = createApi({
           .eq("OpportunityRequest.User.uid", userData.user.id)
           .range(start, end)
           .limit(perPage);
-        console.log(data);
+
         const _data: Opportunity[] | null = data as any;
 
         return { data: { list: _data, count: count || 0 } };
@@ -150,6 +150,32 @@ export const opportunitiesSupaApi = createApi({
       },
       invalidatesTags: ["Opportunity"],
     }),
+    getOpportunitiesRequests: builder.query<
+      { list: OpportunityRequest[]; count: number },
+      { page: number; perPage: number; approved: boolean }
+    >({
+      queryFn: async (args) => {
+        const { page, perPage, approved } = args;
+        const supabase = supaClientHandler;
+        const start = perPage * page;
+        const end = perPage * page + perPage;
+        const { data, count, error } = await supabase
+          .from("OpportunityRequest")
+          .select("*,Opportunity(id,title,deadline,description),User(*)", {
+            count: "exact",
+          })
+          .eq("approved", approved)
+          .range(start, end)
+          .limit(perPage);
+
+        if (error) {
+          return { error };
+        }
+
+        return { data: { list: data, count: count || 0 } };
+      },
+      providesTags: ["Opportunity"],
+    }),
     approveApplicants: builder.mutation<
       null,
       {
@@ -162,8 +188,7 @@ export const opportunitiesSupaApi = createApi({
         const { error } = await supabase
           .from("OpportunityRequest")
           .update({ approved: true })
-          .eq("opportunityId", arg.opportunityId)
-          .eq("userId", arg.userId);
+          .eq("opportunityId", arg.opportunityId);
         if (error) {
           return { error: error };
         }
@@ -202,4 +227,6 @@ export const {
   useDeleteOpportunityRequestMutation,
   useCreateOpportunityRequestMutation,
   useCreateOpportunityTaskMutation,
+  useGetOpportunitiesRequestsQuery,
+  useApproveApplicantsMutation,
 } = opportunitiesSupaApi;

@@ -39,6 +39,7 @@ function ApproveTask() {
 
         <CardContent>
           <GenericUserTaskApprovalList
+            defaultFinished={true}
             per={8}
             singleSelection={task?.id || null}
             onClick={(task) => {
@@ -101,7 +102,7 @@ function ApproveTask() {
                                   setTasks(null);
                                   return toast({
                                     variant: "additive",
-                                    title: `{${task.User.firstname} ${task.User.lastname}} got Approvel Denied`,
+                                    title: `User {${task.User.firstname} ${task.User.lastname}} Task Turnin got Approved`,
                                   });
                                 }
                               }
@@ -136,7 +137,7 @@ function ApproveTask() {
                                   setTasks(null);
                                   return toast({
                                     variant: "additive",
-                                    title: `{${task.User.firstname} ${task.User.lastname}} got Approvel Denied`,
+                                    title: `User {${task.User.firstname} ${task.User.lastname}} Task Turnin got Denied`,
                                   });
                                 }
                               }

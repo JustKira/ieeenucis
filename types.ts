@@ -62,11 +62,11 @@ export type Opportunity = {
 
 export type OpportunityRequest = {
   readonly id: number;
-  readonly Opportunity: Opportunity;
+  readonly Opportunity?: Opportunity | null;
   opportunityId: number;
-  User: User;
+  readonly User?: User | null;
   userId: number;
-  approved: Boolean;
+  approved: boolean;
 };
 
 export type OpportunityTask = {

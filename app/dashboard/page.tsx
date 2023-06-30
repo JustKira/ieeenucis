@@ -88,7 +88,7 @@ function DashboardHomePage() {
         <Card className="w-1/4">
           <CardHeader>
             <CardTitle>
-              <Link href={"/dashboard/tasksr"} className="flex gap-2">
+              <Link href={"/dashboard/tasks"} className="flex gap-2">
                 <Eye className="animate-pulse" />
                 Tasks
               </Link>

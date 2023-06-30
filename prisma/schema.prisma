@@ -103,3 +103,13 @@ model ScoreHistory {
     issuerId   BigInt?
     receiverId BigInt
 }
+
+model KaggleCompetitionLeaderboard {
+    id                Int    @id @default(autoincrement())
+    name              String
+    competitionId     String @unique
+    user              String
+    token             String
+    reward            Int    @default(3)
+    rewardDescription String @default("Reward Tooltip")
+}

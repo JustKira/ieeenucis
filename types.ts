@@ -76,3 +76,14 @@ export type OpportunityTask = {
   readonly Opportunity: Opportunity;
   opportunityId: number;
 };
+
+export interface Submission {
+  teamNameNullable: string;
+  scoreNullable: string;
+  teamId: number;
+  teamName: string;
+  hasTeamName: boolean;
+  submissionDate: string;
+  score: string;
+  hasScore: boolean;
+}

@@ -25,7 +25,7 @@ function Navbar() {
                 <AvatarFallback />
               </Avatar>
               <div className="flex flex-col">
-                <h1 className="font-medium text-primary/75 capitalize">
+                <h1 className="font-medium capitalize text-primary/75">
                   {data.firstname} {data.lastname}
                 </h1>
                 <h2 className="text-xs font-light text-primary/50">
@@ -39,7 +39,9 @@ function Navbar() {
         </div>
         <nav className="flex items-center gap-2 text-sm font-light">
           <Link href={"/"}>Home</Link>
+          <Link href={"/kaggle"}>Kaggle</Link>
           <Link href={"/dashboard"}>Dashboard</Link>
+
           <ModeToggle />
           <div className="flex items-center justify-center w-10 h-10">
             <Button variant={"outline"} className="w-10 h-10">

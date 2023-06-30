@@ -51,10 +51,9 @@ function ViewTask() {
 
   return (
     <div className="flex flex-grow gap-2">
-      <Card className="sticky top-0 w-1/3 h-full">
+      <Card className="sticky top-0 w-1/3 h-fit">
         <CardHeader>
-          <CardTitle>Tasks List</CardTitle>
-          <CardDescription>...</CardDescription>
+          <CardTitle>Tasks</CardTitle>
         </CardHeader>
 
         <CardContent>

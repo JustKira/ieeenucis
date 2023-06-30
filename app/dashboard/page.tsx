@@ -85,7 +85,7 @@ function DashboardHomePage() {
           </Card>
         </div>
 
-        <Card className="w-1/4 h-fit">
+        <Card className="w-1/4">
           <CardHeader>
             <CardTitle>
               <Link href={"/dashboard/tasksr"} className="flex gap-2">

@@ -1,21 +1,33 @@
+"use client";
 import { ModeToggle } from "@/components/ui/ModeToggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
 import { Lock } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 
 function Navbar() {
+  const { data } = useGetSingleUserQuery(-1);
+
   return (
     <nav className="">
       <Card className="justify-between border-x-0 border-t-0 rounded-none fixed w-full h-[8vh] z-50 flex items-center px-2 border-border bg-background">
         <div className="flex items-center gap-2">
-          <Avatar className="rounded-lg">
-            <AvatarImage />
-            <AvatarFallback />
-          </Avatar>
-          <h1>Avatar</h1>
+          {data?.id ? (
+            <>
+              <Avatar className="rounded-lg">
+                <AvatarImage />
+                <AvatarFallback />
+              </Avatar>
+              <h1>
+                {data.firstname} {data.lastname}
+              </h1>
+            </>
+          ) : (
+            <></>
+          )}
         </div>
         <nav className="flex items-center gap-2 text-sm font-light">
           <Link href={"/"}>Home</Link>

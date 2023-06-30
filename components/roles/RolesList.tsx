@@ -41,24 +41,22 @@ function RolesList({
       </CardHeader>
       <CardContent>
         <LoadWrapper loading={isLoading}>
-          <ScrollArea>
-            <div className="flex flex-col space-y-4">
-              {data?.list?.map((role, id) => {
-                return (
-                  <Button
-                    className="items-start justify-start capitalize"
-                    variant={selectedId === role.id ? "secondary" : "outline"}
-                    onClick={() => {
-                      onClick(role);
-                    }}
-                    key={id}
-                  >
-                    {role.name}
-                  </Button>
-                );
-              })}
-            </div>
-          </ScrollArea>
+          <div className="flex flex-col space-y-4">
+            {data?.list?.map((role, id) => {
+              return (
+                <Button
+                  className="items-start justify-start capitalize"
+                  variant={selectedId === role.id ? "secondary" : "outline"}
+                  onClick={() => {
+                    onClick(role);
+                  }}
+                  key={id}
+                >
+                  {role.name}
+                </Button>
+              );
+            })}
+          </div>
         </LoadWrapper>
       </CardContent>
     </Card>

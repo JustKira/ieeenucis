@@ -77,7 +77,7 @@ function page() {
       <Card className="w-1/2 flex-grow">
         <CardHeader>
           <CardTitle>Users</CardTitle>
-          <CardDescription>Select user to edit his roles</CardDescription>
+          <CardDescription>Select user to modify score</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col h-full justify-start">
           <ScrollArea className="h-full">
@@ -110,8 +110,8 @@ function page() {
                         <Input placeholder="0" type="number" {...field} />
                       </FormControl>
                       <FormDescription>
-                        ammount the user will be given or taken if number is
-                        negtive.
+                        amount the user will be given or taken if number is
+                        negative.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>

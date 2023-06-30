@@ -25,24 +25,27 @@ const Pagination: React.FC<PaginationProps> = ({
   if (loading) {
     return (
       <div className="flex gap-4">
-        <Button disabled className="w-8 h-8">
+        <Button disabled className="w-8 h-8 rounded-full">
           .
         </Button>{" "}
-        <Button disabled className="w-8 h-8">
+        <Button disabled className="w-8 h-8 rounded-full">
           .
         </Button>{" "}
-        <Button disabled className="w-8 h-8">
+        <Button disabled className="w-8 h-8 rounded-full">
           .
         </Button>
       </div>
     );
+  }
+  if (currentPage === 1 && !nextPage) {
+    return <></>;
   }
   return (
     <div className="flex gap-4 h-full">
       {previousPage ? (
         <Button
           type="button"
-          className="w-8 h-8 font-medium"
+          className="w-8 h-8 rounded-full font-medium "
           onClick={() => {
             handlePageClick(previousPage);
           }}
@@ -52,13 +55,13 @@ const Pagination: React.FC<PaginationProps> = ({
       ) : (
         <></>
       )}
-      <Button disabled className="w-8 h-8">
+      <Button disabled className="w-8 h-8 rounded-full">
         {currentPage}
       </Button>
       {nextPage ? (
         <Button
           type="button"
-          className="w-8 h-8"
+          className="w-8 h-8 rounded-full"
           onClick={() => {
             handlePageClick(nextPage);
           }}

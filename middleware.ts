@@ -19,13 +19,14 @@ export async function middleware(req: NextRequest) {
     req.nextUrl.pathname.startsWith("/dashboard") ||
     req.nextUrl.pathname.startsWith("/auth/new")
   ) {
-    if (!sessionData.session?.user) {
+    const { data: reSessionData } = await supabase.auth.getSession();
+    if (!reSessionData.session?.user) {
       return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
     const { data: user } = await supabase
       .from("User")
       .select()
-      .eq("uid", sessionData.session?.user.id)
+      .eq("uid", reSessionData.session?.user.id)
       .single();
     if (!user?.id && !req.nextUrl.pathname.startsWith("/auth/new")) {
       return NextResponse.redirect(new URL("/auth/new", req.url));

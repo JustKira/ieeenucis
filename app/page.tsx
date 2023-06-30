@@ -7,12 +7,15 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Arrow, Separator } from "@radix-ui/react-dropdown-menu";
 import { Activity, Users2, Home, ArrowBigDown } from "lucide-react";
 import { useRef } from "react";
+import { useSectionVisibility } from "@/lib/hooks/useSectionVisibility";
 
 export default function HomePage() {
   const section1 = useRef<HTMLDivElement>(null);
   const section2 = useRef<HTMLDivElement>(null);
   const section3 = useRef<HTMLDivElement>(null);
-
+  const isSection1Visible = useSectionVisibility(section1);
+  const isSection2Visible = useSectionVisibility(section2);
+  const isSection3Visible = useSectionVisibility(section3);
   const scrollToDiv = (section: React.RefObject<HTMLDivElement>) => {
     if (section.current) {
       const { top } = section.current.getBoundingClientRect();
@@ -28,13 +31,28 @@ export default function HomePage() {
       <div className="fixed z-40 -translate-y-1/2 top-1/2 left-4">
         <Card className="px-1 py-4 text-xs rounded-full">
           <ul className="flex flex-col gap-6 px-1">
-            <button onClick={() => scrollToDiv(section1)}>
+            <button
+              className={`transition-all duration-300 ${
+                isSection1Visible ? "opacity-100" : "opacity-30"
+              }`}
+              onClick={() => scrollToDiv(section1)}
+            >
               <Home />
             </button>
-            <button onClick={() => scrollToDiv(section2)}>
+            <button
+              className={`transition-all duration-300 ${
+                isSection2Visible ? "opacity-100" : "opacity-30"
+              }`}
+              onClick={() => scrollToDiv(section2)}
+            >
               <Activity />
             </button>
-            <button onClick={() => scrollToDiv(section3)}>
+            <button
+              className={`transition-all duration-300 ${
+                isSection3Visible ? "opacity-100" : "opacity-30"
+              }`}
+              onClick={() => scrollToDiv(section3)}
+            >
               <Users2 />
             </button>
           </ul>

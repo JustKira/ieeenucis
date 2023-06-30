@@ -18,12 +18,20 @@ function Navbar() {
           {data?.id ? (
             <>
               <Avatar className="rounded-lg">
-                <AvatarImage />
+                <AvatarImage
+                  className="rounded-full"
+                  src={`https://ui-avatars.com/api/?name=${data.firstname}+${data.lastname}`}
+                />
                 <AvatarFallback />
               </Avatar>
-              <h1>
-                {data.firstname} {data.lastname}
-              </h1>
+              <div className="flex flex-col">
+                <h1 className="font-medium text-primary/75 capitalize">
+                  {data.firstname} {data.lastname}
+                </h1>
+                <h2 className="text-xs font-light text-primary/50">
+                  {data.email}
+                </h2>
+              </div>
             </>
           ) : (
             <></>

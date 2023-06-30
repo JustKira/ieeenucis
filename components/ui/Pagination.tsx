@@ -25,15 +25,9 @@ const Pagination: React.FC<PaginationProps> = ({
   if (loading) {
     return (
       <div className="flex gap-4">
-        <Button disabled className="w-8 h-8 rounded-full">
-          .
-        </Button>{" "}
-        <Button disabled className="w-8 h-8 rounded-full">
-          .
-        </Button>{" "}
-        <Button disabled className="w-8 h-8 rounded-full">
-          .
-        </Button>
+        {/* <Button disabled className="w-8 h-8 rounded-full"></Button>{" "}
+        <Button disabled className="w-8 h-8 rounded-full"></Button>{" "}
+        <Button disabled className="w-8 h-8 rounded-full"></Button> */}
       </div>
     );
   }

@@ -9,18 +9,18 @@ export async function middleware(req: NextRequest) {
 
   if (req.nextUrl.pathname.startsWith("/auth/signout")) {
     if (!sessionData.session?.user)
-      return NextResponse.rewrite(new URL("/auth/signin", req.url));
+      return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
   if (req.nextUrl.pathname.startsWith("/auth/signin")) {
     if (sessionData.session?.user)
-      return NextResponse.rewrite(new URL("/auth/signout", req.url));
+      return NextResponse.redirect(new URL("/auth/signout", req.url));
   }
   if (
     req.nextUrl.pathname.startsWith("/dashboard") ||
     req.nextUrl.pathname.startsWith("/auth/new")
   ) {
     if (!sessionData.session?.user) {
-      return NextResponse.rewrite(new URL("/auth/signin", req.url));
+      return NextResponse.redirect(new URL("/auth/signin", req.url));
     }
     const { data: user } = await supabase
       .from("User")
@@ -28,7 +28,7 @@ export async function middleware(req: NextRequest) {
       .eq("uid", sessionData.session?.user.id)
       .single();
     if (!user?.id && !req.nextUrl.pathname.startsWith("/auth/new")) {
-      return NextResponse.rewrite(new URL("/auth/new", req.url));
+      return NextResponse.redirect(new URL("/auth/new", req.url));
     }
   }
 

@@ -40,6 +40,7 @@ function Navbar() {
         <nav className="flex items-center gap-2 text-sm font-light">
           <Link href={"/"}>Home</Link>
           <Link href={"/kaggle"}>Kaggle</Link>
+          <Link href={"/leaderboard"}>Leaderboard</Link>
           <Link href={"/dashboard"}>Dashboard</Link>
 
           <ModeToggle />

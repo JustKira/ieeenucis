@@ -11,6 +11,7 @@ import { User, UserTask } from "@/types";
 import { useGetUsertasksQuery } from "@/lib/redux/api/tasksSupaApi";
 import { convertTime } from "@/lib/helper/dateConverter";
 import { ScrollArea } from "../ui/scroll-area";
+import { Badge } from "../ui/badge";
 
 const GenericUserTaskList = ({
   onClick,
@@ -74,13 +75,14 @@ const GenericUserTaskList = ({
                   onClick(utask);
                 }}
               >
-                <div className="flex flex-col items-start justify-start space-y-1">
+                <div className="flex flex-col items-start justify-start space-y-2">
                   <h1 className="text-base font-medium capitalize text-start">
                     {utask.Task?.title}
                   </h1>
-                  <h2 className="text-xs">
+                  <h2 className="text-xs font-light">
                     {convertTime(utask.Task?.dueDate || "")}
                   </h2>
+                  <h1>Points Gain{utask.Task?.points}</h1>
                   <h1 className="text-xs font-light mt-0.5">
                     {utask.approved ? (
                       <>Approved</>

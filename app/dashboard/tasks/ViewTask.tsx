@@ -50,8 +50,8 @@ function ViewTask() {
   }
 
   return (
-    <div className="flex flex-grow gap-2">
-      <Card className="sticky top-0 w-1/3 h-fit">
+    <div className="flex justify-between flex-grow w-full gap-2">
+      <Card className="sticky top-0 w-1/4 h-fit">
         <CardHeader>
           <CardTitle>Tasks</CardTitle>
         </CardHeader>
@@ -67,7 +67,7 @@ function ViewTask() {
         </CardContent>
       </Card>
 
-      <Card className="relative w-full border-0">
+      <Card className="relative w-3/4 border-0">
         <CardHeader>
           <CardTitle className="text-5xl font-light">
             {task?.Task?.title}

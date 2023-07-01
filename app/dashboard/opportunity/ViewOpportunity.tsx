@@ -125,14 +125,12 @@ function ViewOpportunity() {
         {opportunity ? (
           <CardContent>
             {opportunity?.description ? (
-              <ScrollArea className="max-h-[40vh]">
-                <div
-                  className="mdx"
-                  dangerouslySetInnerHTML={{
-                    __html: marked.parse(opportunity.description),
-                  }}
-                />
-              </ScrollArea>
+              <div
+                className="mdx"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(opportunity.description),
+                }}
+              />
             ) : (
               <></>
             )}

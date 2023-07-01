@@ -26,14 +26,14 @@ function TasksPage() {
             <></>
           )}
         </TabsList>
-        <TabsContent value="view">
+        <TabsContent className="w-full" value="view">
           <ViewTask />
         </TabsContent>
-        <TabsContent value="create">
+        <TabsContent className="w-full" value="create">
           <CreateTask />
         </TabsContent>
-        <TabsContent value="update"></TabsContent>
-        <TabsContent value="approve">
+        <TabsContent className="w-full" value="update"></TabsContent>
+        <TabsContent className="w-full" value="approve">
           <ApproveTask />
         </TabsContent>
       </Tabs>

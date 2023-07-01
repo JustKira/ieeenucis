@@ -117,10 +117,10 @@
 }
 
 .mdx ul {
-  @apply list-disc my-2
+  @apply ml-4 list-disc my-2
 }
 .mdx ol {
-  @apply list-decimal my-2
+  @apply ml-4 list-decimal my-2
 }
 .mdx strong {
   @apply font-black

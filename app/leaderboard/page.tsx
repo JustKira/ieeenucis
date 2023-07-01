@@ -23,7 +23,8 @@ const LeaderboardPage = async ({ searchParams }: LeaderboardPageProps) => {
 
   const userResBuilder = supabase
     .from("User")
-    .select("*,UserRole!inner(roleId)");
+    .select("*,UserRole!inner(roleId)")
+    .order("score", { ascending: false });
 
   if (searchParams.f) {
     userResBuilder.eq("UserRole.roleId", searchParams.f);

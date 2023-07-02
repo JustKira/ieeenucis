@@ -78,7 +78,7 @@ model Opportunity {
 
 model OpportunityRequest {
     id            BigInt      @id @default(autoincrement())
-    opportunity   Opportunity @relation(fields: [opportunityId], references: [id])
+    opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
     opportunityId BigInt
     user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId        BigInt

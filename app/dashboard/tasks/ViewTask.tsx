@@ -69,7 +69,7 @@ function ViewTask() {
 
       <Card className="relative w-3/4 border-0">
         <CardHeader>
-          <CardTitle className="text-5xl font-light">
+          <CardTitle className="flex flex-col text-sm font-medium capitalize ">
             {task?.Task?.title}
           </CardTitle>
           <CardDescription>

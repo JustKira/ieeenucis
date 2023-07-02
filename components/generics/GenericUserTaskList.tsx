@@ -76,9 +76,13 @@ const GenericUserTaskList = ({
                 }}
               >
                 <div className="flex flex-col items-start justify-start space-y-2">
-                  <h1 className="text-base font-medium capitalize text-start">
+                  <h1 className="flex flex-col text-base font-medium capitalize text-start">
                     {utask.Task?.title}
+                    <span className="text-xs font-light">
+                      Points Gained {utask?.Task?.points}
+                    </span>
                   </h1>
+
                   <h2 className="text-xs font-light">
                     {convertTime(utask.Task?.dueDate || "")}
                   </h2>

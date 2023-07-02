@@ -141,9 +141,13 @@ function ViewOpportunity() {
                 return (
                   <Card className="relative w-full">
                     <CardHeader className="p-4">
-                      <CardTitle className="text-sm font-medium capitalize ">
+                      <CardTitle className="flex flex-col text-sm font-medium capitalize ">
                         {otask?.Task?.title}
+                        <span className="text-xs font-light">
+                          Points Gained {otask?.Task?.points}
+                        </span>
                       </CardTitle>
+
                       <CardDescription>
                         {otask?.Task?.dueDate ? (
                           <> {convertTime(otask?.Task?.dueDate)}</>

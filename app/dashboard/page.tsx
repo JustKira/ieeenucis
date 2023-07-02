@@ -70,7 +70,7 @@ function DashboardHomePage() {
           <Profile />
           <Card>
             <CardHeader>
-              <CardTitle>ScoreHistory</CardTitle>
+              <CardTitle>Score History</CardTitle>
               <CardDescription>
                 note any score changes that occurred.
               </CardDescription>

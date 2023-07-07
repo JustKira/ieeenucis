@@ -84,14 +84,12 @@ function ViewTask() {
         {task?.Task ? (
           <CardContent>
             {task?.Task?.description ? (
-              <ScrollArea className="max-h-[40vh]">
-                <div
-                  className="mdx"
-                  dangerouslySetInnerHTML={{
-                    __html: marked.parse(task.Task.description),
-                  }}
-                />
-              </ScrollArea>
+              <div
+                className="mdx"
+                dangerouslySetInnerHTML={{
+                  __html: marked.parse(task.Task.description),
+                }}
+              />
             ) : (
               <></>
             )}

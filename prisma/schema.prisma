@@ -53,18 +53,51 @@ model Task {
     issuerId        BigInt
     UserTask        UserTask[]
     OpportunityTask OpportunityTask[]
+    TaskTag         TaskTag[]
+}
+
+model Tag {
+    id      BigInt    @id @default(autoincrement())
+    name    String
+    color   String
+    TaskTag TaskTag[]
+}
+
+model TaskTag {
+    id     BigInt @id @default(autoincrement())
+    task   Task   @relation(fields: [taskId], references: [id])
+    taskId BigInt
+    tag    Tag    @relation(fields: [tagId], references: [id])
+    tagId  BigInt
 }
 
 model UserTask {
-    id       BigInt  @id @default(autoincrement())
-    finished Boolean @default(false)
-    approved Boolean @default(false)
-    user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId   BigInt
-    task     Task    @relation(fields: [taskId], references: [id], onDelete: Cascade)
-    taskId   BigInt
+    id                 BigInt               @id @default(autoincrement())
+    finished           Boolean              @default(false)
+    approved           Boolean              @default(false)
+    user               User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId             BigInt
+    task               Task                 @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    taskId             BigInt
+    UserTaskUploadFile UserTaskUploadFile[]
 
     @@unique([userId, taskId])
+}
+
+model UploadFile {
+    id                 BigInt               @id @default(autoincrement())
+    type               String?
+    download           String?
+    path               String
+    UserTaskUploadFile UserTaskUploadFile[]
+}
+
+model UserTaskUploadFile {
+    id           BigInt     @id @default(autoincrement())
+    uploadFile   UploadFile @relation(fields: [uploadFileId], references: [id])
+    uploadFileId BigInt
+    userTask     UserTask   @relation(fields: [userTaskId], references: [id])
+    userTaskId   BigInt
 }
 
 model Opportunity {

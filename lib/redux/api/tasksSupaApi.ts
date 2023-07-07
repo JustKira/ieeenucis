@@ -61,6 +61,61 @@ export const tasksSupaApi = createApi({
       },
       providesTags: ["UserTask"],
     }),
+    getTasks: builder.query<
+      { list: Task[] | null; count: number },
+      { page: number; perPage: number; search?: string | null }
+    >({
+      queryFn: async (args) => {
+        const { perPage, page, search } = args;
+        const supabase = supaClientHandler;
+        const start = perPage * page;
+        const end = perPage * page + perPage;
+
+        if (search) {
+          const { data, count } = await supabase
+            .from("Task")
+            .select("*", { count: "exact" })
+            .textSearch("title", search, { type: "plain" })
+            .range(start, end)
+            .limit(perPage);
+          const _data: Task[] | null = data as any;
+
+          return { data: { list: _data, count: count || 0 } };
+        } else {
+          const { data, count } = await supabase
+            .from("Task")
+            .select("*", { count: "exact" })
+            .range(start, end)
+            .limit(perPage);
+          const _data: Task[] | null = data as any;
+
+          return { data: { list: _data, count: count || 0 } };
+        }
+      },
+      providesTags: ["UserTask"],
+    }),
+    updateTask: builder.mutation<
+      any,
+      { taskId: number; updatedTask: Partial<Task> }
+    >({
+      queryFn: async (args) => {
+        const supabase = supaClientHandler;
+        const { taskId, updatedTask } = args;
+
+        // Update the task with the provided taskId
+        const { data, error } = await supabase
+          .from("Task")
+          .update(updatedTask)
+          .eq("id", taskId);
+
+        if (error) {
+          return { error: error };
+        }
+
+        return { data: null };
+      },
+      invalidatesTags: ["UserTask"],
+    }),
     createTask: builder.mutation<
       any,
       {
@@ -189,5 +244,7 @@ export const {
   useApproveTaskFuncMutation,
   useCreateTaskMutation,
   useGetUsertasksQuery,
+  useGetTasksQuery,
   useTaskStatusUpdateMutation,
+  useUpdateTaskMutation,
 } = tasksSupaApi;

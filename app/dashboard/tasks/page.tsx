@@ -7,6 +7,7 @@ import { User } from "@/types";
 import CreateTask from "./CreateTask";
 import ViewTask from "./ViewTask";
 import ApproveTask from "./ApproveTask";
+import UpdateTask from "./UpdateTask";
 function TasksPage() {
   const { checkPermission } = usePermission();
 
@@ -32,7 +33,9 @@ function TasksPage() {
         <TabsContent className="w-full" value="create">
           <CreateTask />
         </TabsContent>
-        <TabsContent className="w-full" value="update"></TabsContent>
+        <TabsContent className="w-full" value="update">
+          <UpdateTask />
+        </TabsContent>
         <TabsContent className="w-full" value="approve">
           <ApproveTask />
         </TabsContent>

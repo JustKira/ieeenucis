@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import supaRouterHandler from "@/lib/Supa/SupaRoute";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/Database";
 import { cookies } from "next/headers";
-export async function GET(request: Request) {
+export async function GET(
+  request: Request,
+  { params }: { params: { uid: string } }
+) {
   const { searchParams } = new URL(request.url);
 
-  const uid = searchParams.get("uid");
   const limit = searchParams.get("limit");
   const skip = searchParams.get("skip");
+  const search = searchParams.get("search");
   const approved = searchParams.get("approved");
   const finished = searchParams.get("finished");
 
@@ -16,13 +18,18 @@ export async function GET(request: Request) {
 
   const query = supabase
     .from("UserTask")
-    .select("*,User!inner(id,uid,firstname,lastname),Task(id,title)", {
-      count: "exact",
-    });
-  if (uid) {
-    query.eq("User.uid", uid);
+    .select(
+      "id,approved,finished,User!inner(id,uid),Task!inner(id,title,dueDate,points)",
+      {
+        count: "exact",
+      }
+    );
+  if (params.uid) {
+    query.eq("User.uid", params.uid);
   }
-
+  if (search) {
+    query.textSearch("Task.title", search, { type: "plain" });
+  }
   if (finished === "true") {
     query.eq("finished", true);
   } else {

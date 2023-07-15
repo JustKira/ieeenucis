@@ -1,18 +1,22 @@
-import { NextResponse } from "next/server";
+import { UserTask } from "@/types";
+
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/Database";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
   const id = searchParams.get("id");
   const limit = searchParams.get("limit");
   const skip = searchParams.get("skip");
-  const supabase = createRouteHandlerClient<Database>({ cookies });
 
+  const supabase = createRouteHandlerClient<Database>({ cookies });
   const query = supabase
-    .from("Task")
-    .select("id,title,dueDate,points", { count: "exact" });
+    .from("UserTask")
+    .select("approved,finished,id,userId,Task(*)");
+
   if (id) {
     query.eq("id", id).limit(1).single();
   } else if (limit) {

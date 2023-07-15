@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { checkPermission, isLoading } = usePermission();
 
   const navlinks = [
-    { path: "/", name: "view" },
+    { path: "/view", name: "view" },
     { path: "/create", name: "create" },
     { path: "/update", name: "update" },
     { path: "/delete", name: "delete" },
@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       {checkPermission(
-        ["default_task", "admin_task"],
+        ["admin_task"],
         <Card className="mt-4 border-none drop-shadow-none dark:drop-shadow-none">
           <CardHeader>
             <QuickNav parentPath="/tasks" navlinks={navlinks} />

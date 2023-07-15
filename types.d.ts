@@ -1,3 +1,6 @@
+import { PostgrestError } from "@supabase/supabase-js";
+import { type } from "os";
+
 export type Role = {
   readonly id: number;
   name: string;
@@ -26,6 +29,8 @@ export type UserTask = {
   finished: boolean;
   taskId: number;
   userId: number;
+  allowedUpload: boolean;
+  dupped: boolean;
   Task?: Task | null;
   User?: User | null;
 };
@@ -87,3 +92,17 @@ export interface Submission {
   score: string;
   hasScore: boolean;
 }
+
+type DefaultRequest<TData> = {
+  error: PostgrestError | null;
+  data: TData;
+  count?: number;
+  status: number;
+  statusText: string;
+};
+
+type Tag = {
+  readonly id: number;
+  name: string;
+  color: string;
+};

@@ -66,7 +66,7 @@ function ApproveOpportunity() {
                 </CardHeader>
                 <CardContent>
                   <h1 className="text-lg capitalize">
-                    {opporuntityRequest?.User?.firstname}{" "}
+                    {opporuntityRequest?.User?.firstname}
                     {opporuntityRequest?.User?.lastname}
                   </h1>
                   <h1 className="font-thin text-primary/70">

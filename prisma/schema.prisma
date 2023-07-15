@@ -21,6 +21,7 @@ model User {
     IssuerScoreHistory   ScoreHistory[]       @relation("issuer_SH")
     ReceiverScoreHistory ScoreHistory[]       @relation("receiver_SH")
     OpportunityRequest   OpportunityRequest[]
+    UserNotification     UserNotification[]
 
     @@unique([firstname, lastname])
 }
@@ -49,16 +50,18 @@ model Task {
     points          Int               @default(0)
     dueDate         DateTime
     createdAt       DateTime
+    allowUpload     Boolean           @default(false)
     issuer          User              @relation(fields: [issuerId], references: [id])
     issuerId        BigInt
     UserTask        UserTask[]
     OpportunityTask OpportunityTask[]
     TaskTag         TaskTag[]
+    dupped          Boolean           @default(false)
 }
 
 model Tag {
     id      BigInt    @id @default(autoincrement())
-    name    String
+    name    String    @unique
     color   String
     TaskTag TaskTag[]
 }
@@ -86,9 +89,9 @@ model UserTask {
 
 model UploadFile {
     id                 BigInt               @id @default(autoincrement())
-    type               String?
-    download           String?
-    path               String
+    type               String
+    download           String
+    fileName           String
     UserTaskUploadFile UserTaskUploadFile[]
 }
 
@@ -145,4 +148,19 @@ model KaggleCompetitionLeaderboard {
     token             String
     reward            Int    @default(3)
     rewardDescription String @default("Reward Tooltip")
+}
+
+model Notification {
+    id               BigInt             @id @default(autoincrement())
+    title            String
+    description      String
+    UserNotification UserNotification[]
+}
+
+model UserNotification {
+    id             BigInt       @id @default(autoincrement())
+    user           User         @relation(fields: [userId], references: [id])
+    userId         BigInt
+    notification   Notification @relation(fields: [notificationId], references: [id])
+    notificationId BigInt
 }

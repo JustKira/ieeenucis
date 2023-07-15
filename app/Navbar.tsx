@@ -38,10 +38,19 @@ function Navbar() {
           )}
         </div>
         <nav className="flex items-center gap-2 text-sm font-light">
-          <Link href={"/"}>Home</Link>
-          <Link href={"/kaggle"}>Kaggle</Link>
-          <Link href={"/leaderboard"}>Leaderboard</Link>
-          <Link href={"/dashboard"}>Dashboard</Link>
+          <Link href={"/"}>
+            <Button variant={"link"}>Home </Button>
+          </Link>
+          <Link href={"/kaggle"}>
+            {" "}
+            <Button variant={"link"}>Kaggle</Button>
+          </Link>
+          <Link href={"/leaderboard"}>
+            <Button variant={"link"}>Leaderboard</Button>
+          </Link>
+          <Link href={"/dashboard"}>
+            <Button variant={"link"}>Dashboard</Button>
+          </Link>
 
           <ModeToggle />
           <div className="flex items-center justify-center w-10 h-10">

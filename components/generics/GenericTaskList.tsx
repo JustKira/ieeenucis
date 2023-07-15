@@ -32,7 +32,7 @@ const GenericTaskList = ({
   const [page, setPage] = useState<number>(0);
   const [trigger, setTrigger] = useState<boolean>(false);
 
-  const [search, setSearch] = useDebouncedState<string | null>(null, 300, 500);
+  const [search, setSearch] = useDebouncedState<string | null>(null, 500, 1000);
   const { data, isError, isLoading, error } = useGetTasksQuery({
     page: page,
     perPage: per,

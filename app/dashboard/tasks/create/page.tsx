@@ -50,6 +50,7 @@ import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
 import { PostgrestError } from "@supabase/supabase-js";
 import { convertDateFormat } from "@/lib/helper/dateConverter";
 import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 const FormSchema = z.object({
   title: z.string(),
@@ -249,10 +250,13 @@ function CreateTask() {
                   </FormItem>
                 )}
               />
-              <Switch
-                checked={form.getValues("allowUpload")}
-                onCheckedChange={(v) => form.setValue("allowUpload", v)}
-              />
+              <div className="flex items-center gap-2">
+                <Label>Allow Upload</Label>
+                <Switch
+                  checked={form.getValues("allowUpload")}
+                  onCheckedChange={(v) => form.setValue("allowUpload", v)}
+                />
+              </div>
               <div className="flex gap-4">
                 <Dialog>
                   <DialogTrigger>

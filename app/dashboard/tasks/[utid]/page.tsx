@@ -164,7 +164,8 @@ function page({ params }: { params: { utid: string } }) {
               <></>
             )}
 
-            {getUserTaskByIdRes.data.data.Task.id !== undefined ? (
+            {getUserTaskByIdRes.data.data.Task.id !== undefined &&
+            getUserTaskByIdRes.data.data.Task.allowUpload ? (
               <div className="flex flex-col">
                 <div className="flex items-center justify-start gap-4 my-2 w-fit">
                   <Input
@@ -196,7 +197,7 @@ function page({ params }: { params: { utid: string } }) {
                 </Card>
               </div>
             ) : (
-              <>Error</>
+              <></>
             )}
           </CardContent>
         ) : (

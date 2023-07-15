@@ -2,6 +2,7 @@ import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/Database";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { Task } from "@/types";
 
 export async function GET(
   request: Request,
@@ -10,25 +11,6 @@ export async function GET(
   const { searchParams } = new URL(request.url);
 
   const orid = searchParams.get("orid");
-  const tid = searchParams.get("tid");
-
-  if (!tid) {
-    return new NextResponse(
-      JSON.stringify({
-        error: {
-          message: "no tid was in query",
-          hint: "Please include the 'tid' parameter in the query.",
-          details: null,
-          code: 400,
-        },
-        data: null,
-        count: 0,
-        status: 400,
-        statusText: "bad request",
-      }),
-      { status: 400 }
-    );
-  }
 
   if (!orid) {
     return new NextResponse(
@@ -79,27 +61,32 @@ export async function GET(
     );
   }
 
-  const taskRes = await supabase
-    .from("Task")
-    .select("createdAt,dueDate,description,title,issuerId,points")
-    .eq("id", tid)
+  const opportunitytasksRes = await supabase
+    .from("Opportunity")
+    .select("OpportunityRequest(id),OpportunityTask(Task(*))")
+    .eq("OpportunityTask.id", orid)
     .limit(1)
     .single();
 
-  if (taskRes.error) {
+  if (opportunitytasksRes.error) {
     return new NextResponse(
       JSON.stringify({
-        ...taskRes,
+        ...opportunitytasksRes,
       }),
-      { status: taskRes.status }
+      { status: opportunitytasksRes.status }
     );
   }
 
+  const tasksToCreate: any = opportunitytasksRes.data.OpportunityTask.map(
+    (task) => {
+      return { ...task.Task, dupped: true };
+    }
+  );
+
   const createTask = await supabase
     .from("Task")
-    .insert({ ...taskRes.data, dupped: true })
-    .select("id")
-    .single();
+    .insert(tasksToCreate)
+    .select("id");
 
   if (createTask.error) {
     return new NextResponse(
@@ -110,9 +97,12 @@ export async function GET(
     );
   }
 
+  const userTaskToCreate = createTask.data.map((task) => {
+    return { taskId: task.id, userId: userRes.data.id };
+  });
   const createUserTask = await supabase
     .from("UserTask")
-    .insert({ taskId: createTask.data.id, userId: userRes.data.id });
+    .insert(userTaskToCreate);
 
   return new NextResponse(
     JSON.stringify({

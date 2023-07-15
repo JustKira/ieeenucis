@@ -13,6 +13,7 @@ import { QuickLoader } from "@/components/ui/loaders";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/components/ui/use-toast";
 import { convertTime } from "@/lib/helper/dateConverter";
+import { useApproveOpportunityMutation } from "@/lib/redux/api/opportunitiesApi";
 import { useApproveApplicantsMutation } from "@/lib/redux/api/opportunitiesSupaApi";
 import { useApproveTaskFuncMutation } from "@/lib/redux/api/tasksSupaApi";
 import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
@@ -26,7 +27,7 @@ function ApproveOpportunity() {
     useState<OpportunityRequest | null>();
   const { toast } = useToast();
   const [approveApplicants, { isLoading, isError, error }] =
-    useApproveApplicantsMutation();
+    useApproveOpportunityMutation();
   const { data } = useGetSingleUserQuery(-1);
 
   if (!data) {
@@ -92,9 +93,8 @@ function ApproveOpportunity() {
                               opporuntityRequest.Opportunity
                             ) {
                               await approveApplicants({
-                                userId: opporuntityRequest.User.id,
-                                opportunityId:
-                                  opporuntityRequest.Opportunity.id,
+                                uid: opporuntityRequest.User.id,
+                                orid: opporuntityRequest.Opportunity.id,
                               });
                               if (isError) {
                                 const errorMessage = error as PostgrestError;

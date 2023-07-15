@@ -29,7 +29,6 @@ export type UserTask = {
   finished: boolean;
   taskId: number;
   userId: number;
-  allowedUpload: boolean;
   dupped: boolean;
   Task?: Task | null;
   User?: User | null;
@@ -42,6 +41,7 @@ export type Task = {
   points: number;
   dueDate: string;
   createdAt: string;
+  allowUpload: boolean;
   readonly User?: User;
   issuerId: number;
 };

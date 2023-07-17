@@ -29,7 +29,7 @@ export type UserTask = {
   finished: boolean;
   taskId: number;
   userId: number;
-  dupped: boolean;
+
   Task?: Task | null;
   User?: User | null;
 };
@@ -44,6 +44,7 @@ export type Task = {
   allowUpload: boolean;
   readonly User?: User;
   issuerId: number;
+  dupped: boolean;
 };
 
 export type ScoreHistory = {

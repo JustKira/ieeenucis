@@ -149,7 +149,7 @@ function UpdateTask() {
                 </DialogHeader>
                 <div>
                   <GenericTaskList
-                    per={6}
+                    per={5}
                     singleSelection={task}
                     onClick={(task) => {
                       setTask(task.id);

@@ -16,11 +16,10 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { User } from "@/types";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 import {
   Form,
@@ -115,6 +114,7 @@ function CreateTask() {
       await createTask({
         task: {
           ...data,
+          dupped: false,
           points: Number(data.points),
           issuerId: userData.id,
           createdAt: convertDateFormat(Date.now()),

@@ -16,6 +16,7 @@ import { convertTime } from "@/lib/helper/dateConverter";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { useDebouncedState } from "@react-hookz/web";
+import TaskToWho from "./TaskToWho";
 const GenericTaskList = ({
   onClick,
   per,
@@ -60,36 +61,40 @@ const GenericTaskList = ({
           }}
         />
         <div className="flex flex-col space-y-4">
-          {data?.list?.map((utask, id) => {
+          {data?.list?.map((task, id) => {
             return (
               <Button
-                className={`flex justify-between gap-2 h-18 w-full items-center pr-8 `}
+                className={`group flex justify-between gap-2 h-18 w-full items-center pr-8 `}
                 variant={
                   !multiple
-                    ? singleSelection === utask.id
+                    ? singleSelection === task.id
                       ? "default"
                       : "outline"
-                    : multipleSelection?.includes(utask.id)
+                    : multipleSelection?.includes(task.id)
                     ? "default"
                     : "outline"
                 }
                 key={id}
                 onClick={() => {
-                  onClick(utask);
+                  onClick(task);
                 }}
               >
                 <div className="flex flex-col items-start justify-start space-y-2">
                   <h1 className="flex flex-col text-base font-medium capitalize text-start">
-                    {utask.title}
+                    {task.title}
                     <span className="text-xs font-light">
-                      Points Gained {utask?.points}
+                      Points Gained {task?.points}
                     </span>
                   </h1>
 
-                  <h2 className="text-xs font-light">
-                    {convertTime(utask.dueDate || "")}
+                  <h2 className="text-xs font-extralight">
+                    {convertTime(task.dueDate || "")}
                   </h2>
-                  <h1>Points Gain{utask.points}</h1>
+                  <h1>Points Gain{task.points}</h1>
+
+                  <div className="flex h-0 gap-1 text-xs font-light transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:h-full">
+                    <TaskToWho taskId={task.id} />
+                  </div>
                 </div>
               </Button>
             );

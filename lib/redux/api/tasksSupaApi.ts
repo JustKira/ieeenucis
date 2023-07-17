@@ -3,7 +3,7 @@
  */
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import supaClientHandler from "@/lib/Supa/SupaClient";
-import { Task, UserTask } from "@/types";
+import { Task, User, UserTask } from "@/types";
 import { convertDateFormat } from "@/lib/helper/dateConverter";
 
 function mergeArraysWithoutDuplicates(
@@ -41,6 +41,7 @@ export const tasksSupaApi = createApi({
       },
       providesTags: ["UserTask"],
     }),
+
     getAllUsertasks: builder.query<
       { list: UserTask[] | null; count: number },
       { page: number; perPage: number; approved: boolean; finished: boolean }
@@ -94,6 +95,35 @@ export const tasksSupaApi = createApi({
 
           return { data: { list: _data, count: count || 0 } };
         }
+      },
+      providesTags: ["UserTask"],
+    }),
+    getAssignedToTask: builder.query<
+      {
+        list:
+          | ({
+              firstname: string;
+              lastname: string;
+            } | null)[]
+          | undefined;
+        count: number;
+      },
+      { taskId: number }
+    >({
+      queryFn: async (args) => {
+        const { taskId } = args;
+        const supabase = supaClientHandler;
+
+        const { data, count } = await supabase
+          .from("UserTask")
+          .select("Task!inner(id),User!inner(firstname,lastname)", {
+            count: "exact",
+          })
+          .eq("taskId", taskId);
+
+        const _data = data?.map((d) => d.User);
+
+        return { data: { list: _data, count: count || 0 } };
       },
       providesTags: ["UserTask"],
     }),
@@ -244,6 +274,8 @@ export const tasksSupaApi = createApi({
 });
 export const {
   useGetAllUsertasksQuery,
+  useGetAssignedToTaskQuery,
+  useLazyGetAssignedToTaskQuery,
   useApproveTaskFuncMutation,
   useCreateTaskMutation,
   useGetUsertasksQuery,

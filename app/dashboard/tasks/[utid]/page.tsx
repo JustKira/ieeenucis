@@ -59,7 +59,10 @@ function page({ params }: { params: { utid: string } }) {
       console.log("Uploading");
       const { data, error } = await supabase.storage
         .from("uploads")
-        .upload(`private/tid_${taskId}/${files[i].name}`, files[i]);
+        .upload(
+          `private/tid_${taskId}/utid_${userTaskId}/${files[i].name}`,
+          files[i]
+        );
       if (data) {
         filesInfo.push({
           download: data,
@@ -93,6 +96,7 @@ function page({ params }: { params: { utid: string } }) {
         userTaskId: userTaskId,
         uploadFileId: v.id,
       }));
+
       const userTaskFileUpload = await supabase
         .from("UserTaskUploadFile")
         .insert(UserTaskFileIds)

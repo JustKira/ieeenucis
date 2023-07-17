@@ -116,6 +116,7 @@ function CreateTask() {
       await createTask({
         task: {
           ...data,
+          dupped: false,
           points: Number(data.points),
           issuerId: userData.id,
           createdAt: convertDateFormat(Date.now()),

@@ -92,7 +92,7 @@ const GenericTaskList = ({
                   </h2>
                   <h1>Points Gain{task.points}</h1>
 
-                  <div className="flex h-0 gap-1 text-xs font-light transition-all duration-300 opacity-0 group-hover:opacity-100 group-hover:h-full">
+                  <div className="flex h-full gap-1 text-xs font-light">
                     <TaskToWho taskId={task.id} />
                   </div>
                 </div>

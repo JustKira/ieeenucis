@@ -18,10 +18,14 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Database } from "@/lib/Database";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
+import { useTaskStatusUpdateMutation } from "@/lib/redux/api/tasksSupaApi";
+import { PostgrestError } from "@supabase/supabase-js";
 
 function page({ params }: { params: { utid: string } }) {
   const supabase = createClientComponentClient<Database>();
   const [files, setFiles] = React.useState<FileList>();
+  const [updateTaskStatus, updateTaskStatusResult] =
+    useTaskStatusUpdateMutation();
   const [loading, setLoading] = React.useState<boolean>(false);
   const userData = useGetSingleUserQuery(-1);
   const getUserTaskByIdRes = useGetUserTaskByIdQuery({
@@ -29,6 +33,23 @@ function page({ params }: { params: { utid: string } }) {
     id: params.utid,
   });
   const { toast } = useToast();
+
+  const UpdateTask = (status: boolean, taskId: number) => {
+    updateTaskStatus({ status: status, taskId: taskId });
+    if (updateTaskStatusResult.isError) {
+      const errorMessage = updateTaskStatusResult.error as PostgrestError;
+      return toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: errorMessage.message,
+      });
+    } else {
+      return toast({
+        variant: "additive",
+        title: "Task has been Updated reload Page to see changes",
+      });
+    }
+  };
 
   const UploadFiles = async (taskId: number, userTaskId: number) => {
     if (!files) return;
@@ -38,7 +59,10 @@ function page({ params }: { params: { utid: string } }) {
       console.log("Uploading");
       const { data, error } = await supabase.storage
         .from("uploads")
-        .upload(`private/tid_${taskId}/${files[i].name}`, files[i]);
+        .upload(
+          `private/tid_${taskId}/utid_${userTaskId}/${files[i].name}`,
+          files[i]
+        );
       if (data) {
         filesInfo.push({
           download: data,
@@ -72,6 +96,7 @@ function page({ params }: { params: { utid: string } }) {
         userTaskId: userTaskId,
         uploadFileId: v.id,
       }));
+
       const userTaskFileUpload = await supabase
         .from("UserTaskUploadFile")
         .insert(UserTaskFileIds)
@@ -116,22 +141,26 @@ function page({ params }: { params: { utid: string } }) {
                 <>Task has been Approved</>
               ) : getUserTaskByIdRes.data?.data?.finished ? (
                 <Button
-                  // onClick={() => {
-                  //   UpdateTask(false, task.id);
-                  // }}
-                  disabled={getUserTaskByIdRes.isLoading}
+                  onClick={() => {
+                    if (getUserTaskByIdRes.data?.data.Task.id) {
+                      UpdateTask(false, getUserTaskByIdRes.data?.data.id);
+                    }
+                  }}
+                  disabled={updateTaskStatusResult.isLoading}
                 >
-                  <QuickLoader loading={getUserTaskByIdRes.isLoading} />
+                  <QuickLoader loading={updateTaskStatusResult.isLoading} />
                   Undo Turn In
                 </Button>
               ) : (
                 <Button
-                  // onClick={() => {
-                  //   UpdateTask(true, task.id);
-                  // }}
-                  disabled={getUserTaskByIdRes.isLoading}
+                  onClick={() => {
+                    if (getUserTaskByIdRes.data?.data.Task.id) {
+                      UpdateTask(true, getUserTaskByIdRes.data?.data.id);
+                    }
+                  }}
+                  disabled={updateTaskStatusResult.isLoading}
                 >
-                  <QuickLoader loading={getUserTaskByIdRes.isLoading} />
+                  <QuickLoader loading={updateTaskStatusResult.isLoading} />
                   Turn In
                 </Button>
               )}

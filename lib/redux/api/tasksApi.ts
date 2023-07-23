@@ -26,10 +26,15 @@ export const tasksApi = createApi({
           Task: Partial<Task>;
         }[]
       >,
-      { uid: string; skip: number | null; search?: string | null }
+      {
+        uid: string;
+        skip: number | null;
+        search?: string | null;
+        limit?: number | null;
+      }
     >({
-      query: ({ uid, skip, search }) =>
-        `utasks/${uid}/info?limit=8&skip=${skip || 0}}${
+      query: ({ uid, skip, search, limit }) =>
+        `utasks/${uid}/info?limit=${limit ? limit : 8}&skip=${skip || 0}}${
           search ? `&search=${search}` : ""
         }`,
     }),

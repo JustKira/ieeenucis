@@ -63,11 +63,11 @@ export async function POST(
 
   const opportunitytasksRes = await supabase
     .from("Opportunity")
-    .select("OpportunityRequest(id),OpportunityTask(Task(*))")
+    .select("OpportunityRequest!inner(id),OpportunityTask!inner(Task(*))")
     .eq("OpportunityRequest.id", orid)
     .limit(1)
     .single();
-
+  console.log(opportunitytasksRes);
   if (opportunitytasksRes.error) {
     return new NextResponse(
       JSON.stringify({
@@ -85,7 +85,7 @@ export async function POST(
       }
     }
   );
-
+  console.log(tasksToCreate);
   const createTask = await supabase
     .from("Task")
     .insert(tasksToCreate)
@@ -103,7 +103,7 @@ export async function POST(
   const userTaskToCreate = createTask.data.map((task) => {
     return { taskId: task.id, userId: userRes.data.id };
   });
-
+  console.log(userTaskToCreate);
   const createUserTask = await supabase
     .from("UserTask")
     .insert(userTaskToCreate);

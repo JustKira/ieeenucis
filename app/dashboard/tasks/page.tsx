@@ -35,8 +35,8 @@ function page() {
     uid: userData.data?.uid || "",
     skip: 0,
     search: search,
+    limit: 100,
   });
-  console.log(userTasksQuery.data?.data);
   return (
     <div>
       <Card className="flex flex-col w-full">

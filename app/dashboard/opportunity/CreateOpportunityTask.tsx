@@ -138,126 +138,156 @@ function CreateOpportunityTask() {
     <div className="flex justify-between gap-4">
       <Card className="w-1/2">
         <CardHeader>
-          <CardTitle>Create Task</CardTitle>
-          <CardDescription>
-            add a new task note choose at least a single user or a single role..
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Task Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="a super hard task" {...field} />
-                    </FormControl>
-
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Task Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="..."
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>description supports MD.</FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="points"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Points</FormLabel>
-                    <FormControl>
-                      <Input placeholder="0" type="number" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Users who finish tasks and get task administrator approval
-                      will receive points.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="dueDate"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>DueDate</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <FormControl>
-                          <Button
-                            variant={"outline"}
-                            className={cn(
-                              "w-[240px] pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground"
-                            )}
-                          >
-                            {field.value ? (
-                              format(field.value, "PPP")
-                            ) : (
-                              <span>Pick a date</span>
-                            )}
-                            <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
-                          </Button>
-                        </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={field.value}
-                          onSelect={(date) => {
-                            if (date) {
-                              field.onChange(date);
-                            }
-                          }}
-                          disabled={(date) =>
-                            date < new Date() || date > new Date("2100-01-01")
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                    <FormDescription>
-                      Deadline for task, tasks can't be submit after deadline
-                      but can be approved
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <Label>Allow Upload</Label>
-                <Switch
-                  checked={form.getValues("allowUpload")}
-                  onCheckedChange={(v) => form.setValue("allowUpload", v)}
+          <CardTitle className="flex flex-col gap-2">
+            Create Task{" "}
+            {opportunity ? (
+              <div className="flex gap-4">
+                for <span className="font-thin"> {opportunity.title}</span>
+              </div>
+            ) : (
+              <></>
+            )}
+          </CardTitle>
+          <CardDescription>add task to a Selected Opportunity</CardDescription>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button type="button" className="">
+                Select Opportunity
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Opportunity</DialogTitle>
+                <DialogDescription>
+                  Choose the Opportunity to assign tasks.
+                </DialogDescription>
+              </DialogHeader>
+              <div>
+                <GenericOpportunitiesList
+                  per={8}
+                  singleSelection={opportunity?.id}
+                  onClick={(opportunity) => {
+                    setOpportunity(opportunity);
+                  }}
                 />
               </div>
-              <Button type="submit" disabled={isLoading}>
-                <QuickLoader loading={isLoading} />
-                Submit
-              </Button>
-            </form>
-          </Form>
-        </CardContent>
+            </DialogContent>
+          </Dialog>
+        </CardHeader>
+        {opportunity ? (
+          <CardContent>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-6">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Task Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="a super hard task" {...field} />
+                      </FormControl>
+
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Task Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="..."
+                          className="resize-none"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        description supports MD.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="points"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Points</FormLabel>
+                      <FormControl>
+                        <Input placeholder="0" type="number" {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Users who finish tasks and get task administrator
+                        approval will receive points.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="dueDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>DueDate</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-[240px] pl-3 text-left font-normal",
+                                !field.value && "text-muted-foreground"
+                              )}
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <CalendarIcon className="w-4 h-4 ml-auto opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={field.value}
+                            onSelect={(date) => {
+                              if (date) {
+                                field.onChange(date);
+                              }
+                            }}
+                            disabled={(date) =>
+                              date < new Date() || date > new Date("2100-01-01")
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormDescription>
+                        Deadline for task, tasks can't be submit after deadline
+                        but can be approved
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" disabled={isLoading}>
+                  <QuickLoader loading={isLoading} />
+                  Submit
+                </Button>
+              </form>
+            </Form>
+          </CardContent>
+        ) : (
+          <></>
+        )}
       </Card>
       <Card className="w-1/2">
         <CardHeader>
@@ -284,5 +314,4 @@ function CreateOpportunityTask() {
     </div>
   );
 }
-
 export default CreateOpportunityTask;

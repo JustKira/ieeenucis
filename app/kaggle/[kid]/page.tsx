@@ -31,12 +31,10 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
         Authorization:
           "Basic " + btoa(`${kaggleData.user}:${kaggleData.token}`),
       },
-      next: {
-        revalidate: 3600,
-      },
     }
   );
   const data = await res.json();
+
   return (
     <div className="bg-[url(/kl0.png)] dark:bg-[url(/kl0_dark.png)] bg-center bg-cover bg-no-repeat flex justify-center items-center min-h-screen w-full bg-fixed py-32">
       <div className="flex flex-col  w-[900px] p-2 gap-5 rounded-lg bg-background/90 backdrop-blur-lg">
@@ -46,11 +44,15 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
             {kaggleData.name}
           </h2>
         </div>
-        <KaggleListRenderer
-          text={kaggleData.rewardDescription}
-          reward={kaggleData.reward}
-          submissions={data.submissions}
-        />
+        {data?.submissions ? (
+          <KaggleListRenderer
+            text={kaggleData.rewardDescription}
+            reward={kaggleData.reward}
+            submissions={data.submissions}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );

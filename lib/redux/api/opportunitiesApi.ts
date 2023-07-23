@@ -14,7 +14,10 @@ export const opportunitiesApi = createApi({
       }>,
       { uid: string | number; orid: string | number }
     >({
-      query: ({ uid, orid }) => `opportunities/${uid}?orid=${orid}`,
+      query: ({ uid, orid }) => ({
+        url: `opportunities/${uid}/approve?orid=${orid}`,
+        method: "POST",
+      }),
     }),
   }),
 });

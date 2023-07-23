@@ -93,8 +93,8 @@ function ApproveOpportunity() {
                               opporuntityRequest.Opportunity
                             ) {
                               await approveApplicants({
-                                uid: opporuntityRequest.User.id,
-                                orid: opporuntityRequest.Opportunity.id,
+                                uid: opporuntityRequest.User.uid,
+                                orid: opporuntityRequest.id,
                               });
                               if (isError) {
                                 const errorMessage = error as PostgrestError;

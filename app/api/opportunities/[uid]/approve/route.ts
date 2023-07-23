@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import { Task } from "@/types";
 
-export async function GET(
+export async function POST(
   request: Request,
   { params }: { params: { uid: string } }
 ) {
@@ -64,7 +64,7 @@ export async function GET(
   const opportunitytasksRes = await supabase
     .from("Opportunity")
     .select("OpportunityRequest(id),OpportunityTask(Task(*))")
-    .eq("OpportunityTask.id", orid)
+    .eq("OpportunityRequest.id", orid)
     .limit(1)
     .single();
 
@@ -79,7 +79,10 @@ export async function GET(
 
   const tasksToCreate: any = opportunitytasksRes.data.OpportunityTask.map(
     (task) => {
-      return { ...task.Task, dupped: true };
+      if (task.Task) {
+        const { id, ...rest } = task.Task;
+        return { ...rest, dupped: true };
+      }
     }
   );
 
@@ -100,6 +103,7 @@ export async function GET(
   const userTaskToCreate = createTask.data.map((task) => {
     return { taskId: task.id, userId: userRes.data.id };
   });
+
   const createUserTask = await supabase
     .from("UserTask")
     .insert(userTaskToCreate);

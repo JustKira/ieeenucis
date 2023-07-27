@@ -31,12 +31,17 @@ export const tasksApi = createApi({
         skip: number | null;
         search?: string | null;
         limit?: number | null;
+        pastdue?: boolean;
+        finished?: boolean;
+        approved?: boolean;
       }
     >({
-      query: ({ uid, skip, search, limit }) =>
-        `utasks/${uid}/info?limit=${limit ? limit : 8}&skip=${skip || 0}}${
+      query: ({ uid, skip, search, limit, pastdue, finished, approved }) =>
+        `utasks/${uid}/info?limit=${limit ? limit : 8}&skip=${skip || 0}${
           search ? `&search=${search}` : ""
-        }`,
+        } ${finished ? `&finished=${finished}` : ""} ${
+          approved ? `&approved=${approved}` : ""
+        } ${pastdue ? `&pastdue=${pastdue}` : ""}`,
     }),
   }),
 });

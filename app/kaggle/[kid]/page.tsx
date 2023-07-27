@@ -21,20 +21,18 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
   if (!kaggleData) {
     return <>{params.kid} Couldn't be found</>;
   }
-
+  console.log(
+    process.env.API_PATH + `api/kaggle_record?competitionId=${params.kid}`
+  );
   const res = await fetch(
-    `https://www.kaggle.com/api/v1/competitions/${params.kid}/leaderboard/view`,
+    process.env.API_PATH + `api/kaggle_record?competitionId=${params.kid}`,
     {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization:
-          "Basic " + btoa(`${kaggleData.user}:${kaggleData.token}`),
-      },
     }
   );
-  const data = await res.json();
-
+  const kaggleRes = await res.json();
+  console.log(kaggleRes.data.record);
+  const data = kaggleRes.data.record;
   return (
     <div className="bg-[url(/kl0.png)] dark:bg-[url(/kl0_dark.png)] bg-center bg-cover bg-no-repeat flex justify-center items-center min-h-screen w-full bg-fixed py-32">
       <div className="flex flex-col  w-[900px] p-2 gap-5 rounded-lg bg-background/90 backdrop-blur-lg">

@@ -141,13 +141,20 @@ model ScoreHistory {
 }
 
 model KaggleCompetitionLeaderboard {
-    id                Int    @id @default(autoincrement())
+    id                Int     @id @default(autoincrement())
     name              String
-    competitionId     String @unique
+    competitionId     String  @unique
     user              String
     token             String
-    reward            Int    @default(3)
-    rewardDescription String @default("Reward Tooltip")
+    reward            Int     @default(3)
+    rewardDescription String  @default("Reward Tooltip")
+    completed         Boolean @default(false)
+}
+
+model KaggleCompetitionRecord {
+    id            Int    @id @default(autoincrement())
+    competitionId String @unique
+    record        Json
 }
 
 model Notification {

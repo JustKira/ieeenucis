@@ -13,7 +13,7 @@ export async function GET(
   const search = searchParams.get("search");
   const approved = searchParams.get("approved");
   const finished = searchParams.get("finished");
-
+  const pastdue = searchParams.get("pastdue");
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
   const query = supabase
@@ -26,6 +26,14 @@ export async function GET(
     );
   if (params.uid) {
     query.eq("User.uid", params.uid);
+  }
+
+  if (pastdue === "true") {
+    const currentDate = new Date().toISOString();
+    query.lt("Task.dueDate", currentDate);
+  } else {
+    const currentDate = new Date().toISOString();
+    query.gte("Task.dueDate", currentDate);
   }
   if (search) {
     query.textSearch("Task.title", search, { type: "plain" });
@@ -44,6 +52,7 @@ export async function GET(
 
   if (limit) {
     query
+      .order("dueDate", { foreignTable: "Task", ascending: false })
       .range(parseInt(skip || "0"), parseInt(skip || "0") + parseInt(limit))
       .limit(parseInt(limit));
   } else {

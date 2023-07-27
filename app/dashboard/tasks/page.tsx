@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -23,27 +24,73 @@ import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
 import { useDebouncedState } from "@react-hookz/web";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 function page() {
   const searchParam = useSearchParams();
   const [search, setSearch] = useDebouncedState<string | null>(null, 300, 500);
 
   const userData = useGetSingleUserQuery(-1);
-
+  const [finished, setFinished] = useState<boolean>(false);
+  const [approved, setApproved] = useState<boolean>(false);
+  const [pastdue, setPastdue] = useState<boolean>(false);
   const userTasksQuery = useGetUserTasksQuery({
     uid: userData.data?.uid || "",
     skip: 0,
     search: search,
     limit: 100,
+    approved: approved,
+    finished: finished,
+    pastdue: pastdue,
   });
   return (
     <div>
       <Card className="flex flex-col w-full">
         <CardHeader>
-          <div className="w-fit">
-            <Label>Search</Label>
-            <Input onChange={(v) => setSearch(v.target.value)} />
+          <div className="flex justify-start gap-2 w-fit">
+            <div className="flex flex-col gap-2">
+              {/* <Label>Search</Label> */}
+              <Input
+                placeholder="Search"
+                onChange={(v) => setSearch(v.target.value)}
+              />
+            </div>
+
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <Label>PastDue</Label>
+                <Switch
+                  checked={pastdue}
+                  onCheckedChange={(v) => {
+                    setPastdue(v);
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label>Finished</Label>
+                <Switch
+                  checked={finished}
+                  onCheckedChange={(v) => {
+                    setFinished(v);
+                    if (approved === true && v === false) {
+                      setApproved(false);
+                    }
+                  }}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Label>Approved</Label>
+                <Switch
+                  checked={approved}
+                  onCheckedChange={(v) => {
+                    setApproved(v);
+                    if (finished === false && v === true) {
+                      setFinished(true);
+                    }
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </CardHeader>
         <CardContent>

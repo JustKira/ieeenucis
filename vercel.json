@@ -1,8 +1,0 @@
-{
-    "crons": [
-      {
-        "path": "/api/duedateReminder",
-        "schedule": "10 11 * * *"
-      }
-    ]
-  }

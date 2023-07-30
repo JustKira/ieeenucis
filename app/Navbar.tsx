@@ -42,7 +42,6 @@ function Navbar() {
             <Button variant={"link"}>Home </Button>
           </Link>
           <Link href={"/kaggle"}>
-            {" "}
             <Button variant={"link"}>Kaggle</Button>
           </Link>
           <Link href={"/leaderboard"}>

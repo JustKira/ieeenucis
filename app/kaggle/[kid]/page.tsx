@@ -24,7 +24,7 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
   }
 
   const res = await fetch(
-    process.env.NEXT_API_PATH + `api/kaggle_record?competitionId=${params.kid}`,
+    process.env.API_PATH + `api/kaggle_record?competitionId=${params.kid}`,
     {
       method: "GET",
     }

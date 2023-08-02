@@ -31,15 +31,15 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
     }
   );
   const kaggleRes = await res.json();
-  console.log(kaggleRes.data.record);
-  const data = kaggleRes.data.record;
+
+  const data = kaggleRes?.data?.record;
   return (
     <div className="bg-[url(/kl0.png)] dark:bg-[url(/kl0_dark.png)] bg-center bg-cover bg-no-repeat flex justify-center items-center min-h-screen w-full bg-fixed py-32">
       <div className="flex flex-col  w-[900px] p-2 gap-5 rounded-lg bg-background/90 backdrop-blur-lg">
         <div className="flex flex-col items-start p-8">
           <h2 className="text-lg uppercase text-primary pl-7">leaderboard</h2>
           <h2 className="px-8 py-2 text-2xl font-black uppercase bg-blue-500 rounded-full dark:bg-blue-600 text-primary-foreground">
-            {kaggleData.name}
+            {kaggleData?.name}
           </h2>
         </div>
         {data?.submissions ? (

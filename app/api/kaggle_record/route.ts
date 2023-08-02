@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     .from("KaggleCompetitionLeaderboard")
     .select()
     .eq("completed", false);
-
+  console.log(res.data?.length);
   res.data?.map(async (data) => {
     const res = await fetch(
       `https://www.kaggle.com/api/v1/competitions/${data.competitionId}/leaderboard/view`,
@@ -37,12 +37,15 @@ export async function POST(request: Request) {
         },
       }
     );
+
     let record;
 
     try {
       record = await res.json();
+      console.log(record);
     } catch (error) {}
     if (record) {
+      console.log(record);
       try {
         await supabase
           .from("KaggleCompetitionRecord")

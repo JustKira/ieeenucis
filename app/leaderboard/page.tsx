@@ -13,6 +13,9 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Top1, Top2, Top3 } from "./Top";
+import LBSDSvg from "./LBSDSvg";
+
+import { HiMiniTrophy } from "react-icons/hi2";
 interface LeaderboardPageProps {
   searchParams: { f: number | undefined };
 }
@@ -25,7 +28,7 @@ const LeaderboardPage = async ({ searchParams }: LeaderboardPageProps) => {
   const userResBuilder = supabase
     .from("User")
     .select("*,UserRole!inner(roleId)")
-    .neq("score", 0)
+    .gte("score", 1)
     .order("score", { ascending: false });
 
   if (searchParams.f) {
@@ -81,17 +84,31 @@ const LeaderboardPage = async ({ searchParams }: LeaderboardPageProps) => {
         </Dialog>
 
         <div className="flex flex-col items-center gap-4 mt-16">
-          {/* <div className="flex items-center justify-center w-32 h-32 p-2 text-blue-500 rounded-full dark:text-white bg-background">
-            <Trophy size={80} />
-          </div> */}
+          <div className="flex items-center justify-center gap-4 p-2 mb-12 text-blue-500 rounded-full dark:text-white">
+            <HiMiniTrophy size={42} />
+            <h1 className="text-5xl font-medium uppercase">Leaderboard</h1>{" "}
+            <HiMiniTrophy size={42} />
+          </div>
+          <div className="absolute right-24 h-3/4">
+            <LBSDSvg />
+            <div className="absolute top-0 right-0 blur-3xl animate-pulse">
+              <LBSDSvg />
+            </div>
+          </div>
+          <div className="absolute scale-y-100 left-24 -scale-x-100 h-3/4">
+            <LBSDSvg />
+            <div className="absolute top-0 left-0 blur-3xl animate-pulse">
+              <LBSDSvg />
+            </div>
+          </div>
           {users.data?.[0] ? <Top1 user={users.data[0]} /> : <></>}
-          <div className="mt-24 flex gap-12">
+          <div className="flex gap-12 mt-12">
             <div>{users.data?.[1] ? <Top2 user={users.data[1]} /> : <></>}</div>
             <div className="mt-24">
               {users.data?.[2] ? <Top3 user={users.data[2]} /> : <></>}
             </div>
           </div>
-          <div className="py-12 flex gap-6 flex-col">
+          <div className="flex flex-col gap-6 py-12">
             {" "}
             {users.data?.map((user, id) => {
               if (id <= 2) {
@@ -105,9 +122,9 @@ const LeaderboardPage = async ({ searchParams }: LeaderboardPageProps) => {
                   }}`}
                   key={id}
                 >
-                  <div className="flex gap-2 items-center">
+                  <div className="flex items-center gap-2">
                     <h1 className="mx-2 font-bold">{id + 1}</h1>
-                    <h1 className="font-bold text-lg">
+                    <h1 className="text-lg font-bold">
                       {user.firstname} {user.lastname}
                     </h1>
                   </div>

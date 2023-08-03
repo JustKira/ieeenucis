@@ -53,6 +53,14 @@ import { useGetSingleUserQuery } from "@/lib/redux/api/usersSupaApi";
 import { PostgrestError } from "@supabase/supabase-js";
 import { convertDateFormat } from "@/lib/helper/dateConverter";
 import GenericTaskList from "@/components/generics/GenericTaskList";
+function parseDateStringToDate(dateString: string): Date {
+  const [datePart, timePart] = dateString.split(" ");
+  const [year, month, day] = datePart.split("-").map(Number);
+  const [hour, minute, second] = timePart.split(":").map(Number);
+  const dateObject = new Date(year, month - 1, day, hour, minute, second);
+
+  return dateObject;
+}
 
 const FormSchema = z.object({
   title: z.string().optional(),
@@ -152,6 +160,13 @@ function UpdateTask() {
                     per={5}
                     singleSelection={task}
                     onClick={(task) => {
+                      form.setValue(
+                        "dueDate",
+                        parseDateStringToDate(task.dueDate)
+                      );
+                      form.setValue("points", task.points.toString());
+                      form.setValue("title", task.title);
+                      form.setValue("description", task.description);
                       setTask(task.id);
                     }}
                   />

@@ -152,6 +152,10 @@ function UpdateTaskPage() {
                     per={5}
                     singleSelection={task}
                     onClick={(task) => {
+                      form.setValue("dueDate", new Date(task.dueDate));
+                      form.setValue("points", task.points.toString());
+                      form.setValue("title", task.title);
+                      form.setValue("description", task.description);
                       setTask(task.id);
                     }}
                   />

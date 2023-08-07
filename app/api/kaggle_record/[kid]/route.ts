@@ -35,7 +35,7 @@ export async function POST(
     } catch (error) {}
     if (record) {
       const kcr = await supabase
-        .from("KaggleCompetitionLeaderboard")
+        .from("KaggleCompetitionRecord")
         .select("competitionId")
         .eq("competitionId", data.competitionId)
         .limit(1)

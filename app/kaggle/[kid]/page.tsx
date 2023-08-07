@@ -30,7 +30,6 @@ const KIDPage: React.FC<KIDPageProps> = async ({ params }) => {
     }
   );
   const kaggleRes = await res.json();
-
   const data = kaggleRes?.data?.record;
   return (
     <div className="bg-[url(/kl0.png)] dark:bg-[url(/kl0_dark.png)] bg-center bg-cover bg-no-repeat flex justify-center items-center min-h-screen w-full bg-fixed py-32">

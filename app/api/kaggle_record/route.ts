@@ -45,18 +45,18 @@ export async function POST(request: Request) {
     } catch (error) {}
     if (record) {
       const kcr = await supabase
-        .from("KaggleCompetitionLeaderboard")
+        .from("KaggleCompetitionRecord")
         .select("competitionId")
         .eq("competitionId", data.competitionId)
         .limit(1)
         .single();
-
       if (kcr.data) {
         await supabase
           .from("KaggleCompetitionRecord")
           .update({ record: record })
           .eq("competitionId", data.competitionId);
       } else {
+        console.log("data not found createing");
         await supabase
           .from("KaggleCompetitionRecord")
           .insert({ record: record, competitionId: data.competitionId });

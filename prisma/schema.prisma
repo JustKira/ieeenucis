@@ -171,3 +171,27 @@ model UserNotification {
     notification   Notification @relation(fields: [notificationId], references: [id])
     notificationId BigInt
 }
+
+model Quiz {
+    id            BigInt          @id @default(autoincrement())
+    startAt       DateTime
+    endAt         DateTime
+    duration      Int
+    QuizQuestions QuizQuestions[]
+}
+
+model QuizQuestions {
+    id         BigInt   @id @default(autoincrement())
+    quiz       Quiz     @relation(fields: [quizId], references: [id])
+    question   Question @relation(fields: [questionId], references: [id])
+    quizId     BigInt
+    questionId BigInt
+}
+
+model Question {
+    id            BigInt          @id @default(autoincrement())
+    question      String
+    answer        String
+    choices       String[]
+    QuizQuestions QuizQuestions[]
+}

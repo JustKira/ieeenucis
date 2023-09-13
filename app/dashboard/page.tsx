@@ -2,6 +2,7 @@
 import GenericScoreHistory from "@/components/generics/GenericScoreHistory";
 import GenericUserTaskList from "@/components/generics/GenericUserTaskList";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Calendar from "@/components/Calendar";
 import {
   Card,
   CardContent,
@@ -65,6 +66,7 @@ function DashboardHomePage() {
 
   return (
     <div className="flex flex-col py-4 pr-2 space-y-6">
+      <Calendar />
       <div className="flex gap-4">
         <div className="flex flex-col w-3/4 space-y-2">
           <Profile />
@@ -78,7 +80,7 @@ function DashboardHomePage() {
             <CardContent>
               <GenericScoreHistory
                 per={8}
-                userId={data.id}
+                userId={data?.id || -1}
                 onClick={() => {}}
               />
             </CardContent>

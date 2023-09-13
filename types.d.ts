@@ -1,6 +1,11 @@
 import { PostgrestError } from "@supabase/supabase-js";
 import { type } from "os";
 
+export type Week = {
+  weektitle: string;
+  days: string[][];
+};
+
 export type Role = {
   readonly id: number;
   name: string;

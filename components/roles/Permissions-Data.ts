@@ -42,4 +42,9 @@ export const Permissions: Permission[] = [
     permission: "default_opportunity",
     description: "Allows users to view and read opportunities",
   },
+  {
+    name: "Senior calendar",
+    permission: "senior_calendar",
+    description: "Allows seniors to see a special calendar",
+  },
 ];

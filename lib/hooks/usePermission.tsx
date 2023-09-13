@@ -38,5 +38,20 @@ export default function usePermission() {
     }
   };
 
-  return { isLoading, checkPermission };
+  const checkPermissionNonJSX = (permissions: string[], toRun: () => void) => {
+    permissions.push("*");
+
+    const hasPermission = userPermission?.some((permission) =>
+      permissions.includes(permission)
+    );
+
+    if (hasPermission) {
+      toRun();
+    }
+    {
+      return;
+    }
+  };
+
+  return { isLoading, checkPermission, checkPermissionNonJSX };
 }

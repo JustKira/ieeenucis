@@ -190,6 +190,37 @@ export const usersSupaApi = createApi({
         return { data: { list: data, count: count || 0 } };
       },
     }),
+    getQuickPermission: builder.mutation<
+      any,
+      { ammount: number; reason: string; receiver: number; issuer: number }
+    >({
+      queryFn: async (args, api, extraOptions, baseQuery) => {
+        const supabase = supaClientHandler;
+        const { data, error } = await supabase.from("ScoreHistory").insert({
+          ammount: args.ammount,
+          date: convertDateFormat(Date.now()),
+          reason: args.reason,
+          receiverId: args.receiver,
+          issuerId: args.issuer,
+        });
+
+        if (error) {
+          return { error: error };
+        }
+        const { error: incrementError } = await supabase.rpc("increment", {
+          x: args.ammount,
+          row_id: args.receiver,
+        });
+        if (incrementError) {
+          return { error: incrementError };
+        }
+        return { data: data };
+      },
+      invalidatesTags: (result, error, arg) => [
+        { type: "USERS", id: arg.receiver },
+        "USERS",
+      ],
+    }),
   }),
 });
 export const {

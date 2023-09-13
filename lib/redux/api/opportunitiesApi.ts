@@ -19,7 +19,23 @@ export const opportunitiesApi = createApi({
         method: "POST",
       }),
     }),
+    quickPerms: builder.mutation<
+      DefaultRequest<{
+        id: number;
+        approved: boolean;
+        finished: boolean;
+        Task: Partial<Task>;
+      }>,
+      void
+    >({
+      query: () => ({
+        url: `temp/quick-perms`,
+        method: "POST",
+      }),
+    }),
+    //
   }),
 });
 
-export const { useApproveOpportunityMutation } = opportunitiesApi;
+export const { useApproveOpportunityMutation, useQuickPermsMutation } =
+  opportunitiesApi;

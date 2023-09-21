@@ -1,3 +1,7 @@
 {
-  "extends": ["next/core-web-vitals", "./lib/Database.ts"]
+  "extends": [
+    "next/core-web-vitals",
+    "@/lib/database.d.ts",
+    "@/lib/database.ts"
+  ]
 }

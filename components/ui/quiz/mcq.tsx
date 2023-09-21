@@ -9,8 +9,8 @@ import {
 } from "../card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
 import { QuizAnswerSchema } from "@/app/quiz/[id]/page";
+import { MCQQuestion, MultiQuestion } from "@/types";
 
 function Mcq({
   index,
@@ -45,7 +45,7 @@ function Mcq({
       </CardHeader>
       <CardContent>
         {object.type === "MULTI" ? (
-          <div className="flex gap-2 flex-col">
+          <div className="flex flex-col gap-2">
             {object.choices.map((c, i) => (
               <div key={i} className="flex items-center space-x-2">
                 <Checkbox

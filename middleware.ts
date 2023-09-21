@@ -1,6 +1,6 @@
 import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
 import { NextRequest, NextResponse } from "next/server";
-import { Database } from "./lib/Database";
+import { Database } from "@/lib/database";
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next();

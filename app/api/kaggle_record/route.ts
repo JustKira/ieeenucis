@@ -1,4 +1,4 @@
-import { Database } from "@/lib/Database";
+import { Database } from "@/lib/database";
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
@@ -10,7 +10,7 @@ export async function GET(request: Request) {
   const query = supabase
     .from("KaggleCompetitionRecord")
     .select()
-    .eq("competitionId", competitionId)
+    .eq("competitionId", competitionId || -1)
     .single();
 
   const res = await query;

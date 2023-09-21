@@ -15,7 +15,7 @@ import { convertTime } from "@/lib/helper/dateConverter";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "@/lib/Database";
+import { Database } from "@/lib/database";
 import { useToast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { useTaskStatusUpdateMutation } from "@/lib/redux/api/tasksSupaApi";

@@ -1,6 +1,6 @@
 "use client";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Database } from "../Database";
+import { Database } from "@/lib/database";
 
 const supaClientHandler = createClientComponentClient<Database>();
 

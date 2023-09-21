@@ -47,4 +47,14 @@ export const Permissions: Permission[] = [
     permission: "senior_calendar",
     description: "Allows seniors to see a special calendar",
   },
+  {
+    name: "Quiz Access",
+    permission: "default_quiz",
+    description: "Give User permissions to basics of quiz page "
+  },
+  {
+    name: "Quiz Access Admin",
+    permission: "admin_quiz",
+    description: "Give Admin permissions to all of quiz page "
+  }
 ];

@@ -9,6 +9,7 @@ import {
   ShieldAlert,
   Users2,
   Lock,
+  ScrollText,
   Clover,
   Loader2,
   BarChart3,
@@ -66,6 +67,12 @@ function Sidebar() {
       permissions: ["admin_scoring"],
       icon: <BarChart3 size={18} />,
       text: "Scoring",
+    },
+    {
+      href: "/dashboard/quiz",
+      permissions: ["default_quiz", "admin_quiz"],
+      icon: <ScrollText size={18} />,
+      text: "Quizzy",
     },
     {
       href: "/dashboard/kaggle",

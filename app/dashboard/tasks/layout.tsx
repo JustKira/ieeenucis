@@ -28,7 +28,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {checkPermission(
         ["default_task", "admin_task"],
-        <Card className="mt-4 border-none drop-shadow-none dark:drop-shadow-none">
+        <Card className="border-none drop-shadow-none dark:drop-shadow-none">
           <CardHeader>
             <QuickNav parentPath="/tasks" navlinks={navlinks} />
           </CardHeader>

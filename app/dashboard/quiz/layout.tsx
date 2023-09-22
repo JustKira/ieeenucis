@@ -2,10 +2,16 @@
 
 import React from "react";
 import usePermission from "@/lib/hooks/usePermission";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import QuickNav from "@/components/ui/QuickNav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { checkPermission, isLoading } = usePermission();
+
+    const navlinks = [
+    { path: "/", name: "view" },
+    { path: "/editor", name: "editor" },
+  ];
   if (isLoading) {
     return (
       <>
@@ -21,7 +27,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {checkPermission(
         ["default_quiz", "admin_quiz"],
-        <>{children}</>,
+              <Card className="mt-4 border-none drop-shadow-none dark:drop-shadow-none">
+          <CardHeader>
+            <QuickNav parentPath="/quiz" navlinks={navlinks} />
+          </CardHeader>
+          <CardContent>{children}</CardContent>
+        </Card>,
         <></>,
         true
       )}

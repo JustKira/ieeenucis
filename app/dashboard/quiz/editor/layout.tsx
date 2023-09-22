@@ -29,14 +29,13 @@ function layout({ children }: { children: React.ReactNode }) {
       {checkPermission(
         ["admin_quiz"],
         <>
-          {" "}
           <>
             <CardHeader>
               <CardTitle>EditorPage</CardTitle>
-              <CardDescription className="flex gap-2">
-                <Link href={"/dashboard/quiz/editor"}>
+              <CardDescription className="flex gap-8 border border-border rounded-full w-fit px-8">
+                <Link href={"/dashboard/quiz/editor/collection"}>
                   <Button className="p-0 w-fit" variant={"link"}>
-                    Quiz
+                    Collection
                   </Button>
                 </Link>
                 <Link href={"/dashboard/quiz/editor/questions"}>
@@ -44,9 +43,9 @@ function layout({ children }: { children: React.ReactNode }) {
                     Questions
                   </Button>
                 </Link>
-                <Link href={"/dashboard/quiz/editor/collection"}>
+                <Link href={"/dashboard/quiz/editor"}>
                   <Button className="p-0 w-fit" variant={"link"}>
-                    Collection
+                    Quiz
                   </Button>
                 </Link>
                 <Link href={"/dashboard/quiz/editor/schedule"}>

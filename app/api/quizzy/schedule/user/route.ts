@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     .schema("quizzy")
     .from("UserQuiz")
     .select("*,Quiz(*),QuizSchedule(*)")
-    .eq("userId", userRes.data.id);
+    .eq("userId", userRes.data.id)
 
   return new NextResponse(
     JSON.stringify({

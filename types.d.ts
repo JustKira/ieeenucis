@@ -212,6 +212,7 @@ type UserQuiz = {
   quizScheduleId: number;
   QuizSchedule: Partial<QuizSchedule>;
   attendedAt: string;
+  submitted:boolean;
   userId: number;
   quizId: number;
 };
@@ -352,6 +353,7 @@ type UserQuiz = {
   quizScheduleId: number;
   QuizSchedule: Partial<QuizSchedule>;
   attendedAt: string;
+  submitted: boolean;
   userId: number;
   quizId: number;
 };

@@ -72,7 +72,7 @@ export function isDateMatch(dateString: string): boolean {
   const currentDate = new Date();
 
   const targetDate = new Date(dateString);
-  targetDate.setDate(targetDate.getDate() + 1);
+  targetDate.setDate(targetDate.getDate());
 
   console.log(targetDate.toISOString());
   // Extract date parts (year, month, and day) for comparison

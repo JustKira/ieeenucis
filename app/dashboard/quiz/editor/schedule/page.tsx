@@ -76,10 +76,12 @@ function SchedulePage() {
     }
   }, [createScheduleRes.data]);
   const onSubmit = form.handleSubmit(async (data) => {
-    console.log();
+    const nextDay = new Date(data.startDate);
+    nextDay.setDate(nextDay.getDate() + 1);
+    //@ts-ignore
     await createSchedule({
       ...data,
-      startDate: data.startDate.toISOString(),
+      startDate: nextDay.toISOString(),
       quizId: Number(data.quizId),
       duration: convertToMinutes(snapTime(convertToTime(data.duration))),
     });

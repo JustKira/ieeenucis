@@ -17,7 +17,7 @@ function removeAnswer(question: Question): QuestionNoAnswer {
     } else {
       const cleanedChoices: Omit<Choice, "isAnswer">[] =
         question.object.choices.map((c) => {
-          return { choice: c.choice };
+          return { choice: c.choice, id: c.id };
         });
       return {
         ...question,

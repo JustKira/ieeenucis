@@ -33,7 +33,7 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
           });
         }
       } else {
-        setHasPassedTimer(true);
+        setHasPassedTimer(false);
       }
     };
 

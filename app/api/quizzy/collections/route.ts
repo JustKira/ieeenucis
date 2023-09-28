@@ -19,3 +19,25 @@ export async function GET(request: NextRequest) {
     { status: collectionsRes.status }
   );
 }
+
+export async function POST(request: NextRequest) {
+  const body = await request.json();
+  console.log(body);
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+
+  const res = await supabase
+    .schema("quizzy")
+    .from("QuestionsCollection")
+    .insert(body);
+
+  return new NextResponse(
+    JSON.stringify(
+      res.error
+        ? {
+            ...res,
+          }
+        : null
+    ),
+    { status: res.status }
+  );
+}

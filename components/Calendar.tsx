@@ -32,7 +32,6 @@ function Calendar() {
     checkPermissionNonJSX(["senior_calendar"], () => {
       num = num + cal_offset;
     });
-    console.log(num);
     setWeekIndex(num - 1);
   }, []);
   return (
@@ -48,7 +47,9 @@ function Calendar() {
               Current Week
             </button>
             <button
-              onClick={() => setNextWeek(true)}
+              onClick={() => {
+                setNextWeek(true);
+              }}
               data-selected={nextWeek}
               className="data-[selected=true]:opacity-100 opacity-50"
             >
@@ -58,7 +59,9 @@ function Calendar() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Calender</CardTitle>
+              <CardTitle>
+                {weekData[nextWeek ? weekIndex + 1 : weekIndex].weektitle}
+              </CardTitle>
             </CardHeader>
             <CardContent className="flex gap-2">
               {weekData[nextWeek ? weekIndex + 1 : weekIndex].days.map(

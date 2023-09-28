@@ -12,28 +12,49 @@ import { UserQuiz } from "@/types";
 
 function YourQuiz() {
   const { data } = quizApi.useUserQuizQuery();
-const [sortedData, setSortedData] = useState<UserQuiz[]>([]);
-useEffect(() => {
-  // Sort the UserQuiz data by startDate in ascending order
-  if (data?.data) {
-    const sorted = data.data.slice().sort((a, b) => {
-      if (a.QuizSchedule?.startDate && b.QuizSchedule?.startDate) {
-        return ( 
-          //@ts-ignore
-new Date(a.QuizSchedule.startDate) - new Date(b.QuizSchedule.startDate)
-        );
-      }
-      return 0;
-    });
-    //@ts-ignore
-    setSortedData(sorted);
-  }
-}, [data]);
+  const [sortedData, setSortedData] = useState<UserQuiz[]>([]);
+  useEffect(() => {
+    // Sort the UserQuiz data by startDate in ascending order
+    if (data?.data) {
+      const sorted = data.data.slice().sort((a, b) => {
+        if (a.QuizSchedule?.startDate && b.QuizSchedule?.startDate) {
+          return (
+            //@ts-ignore
+            new Date(a.QuizSchedule.startDate) -
+            //@ts-ignore
+            new Date(b.QuizSchedule.startDate)
+          );
+        }
+        return 0;
+      });
+      //@ts-ignore
+      setSortedData(sorted);
+    }
+  }, [data]);
   return (
     <div className="flex flex-col gap-1 py-2">
       {sortedData.reverse().map((d) => {
         if (d.attended && d.submitted) {
-          return <></>;
+          return (
+            <Card className="opacity-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base font-light">
+                  {d.QuizSchedule?.name}
+                  <Badge>{"Submitted"}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <h1>{`${d.autoGrade} / ${d.Quiz?.totalMarks}`}</h1>
+                {d.QuizSchedule.startDate ? (
+                  <h1 className="text-xs font-extralight">
+                    {format(new Date(d.QuizSchedule.startDate), "PPP")}
+                  </h1>
+                ) : (
+                  <></>
+                )}
+              </CardContent>
+            </Card>
+          );
         }
         return (
           <Card className="">
@@ -48,10 +69,10 @@ new Date(a.QuizSchedule.startDate) - new Date(b.QuizSchedule.startDate)
                 <>
                   {isDateMatch(d.QuizSchedule?.startDate) ? (
                     <>
-                      <Link href={`quiz/${d.id}`}>
+                      <Link href={`/quiz/${d.id}`} className="py-1">
                         <Button className="h-8">Start</Button>
                       </Link>
-                      <Separator />
+                      <Separator className="my-4" />
                     </>
                   ) : (
                     <></>

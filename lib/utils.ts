@@ -96,3 +96,19 @@ export function isDateMatch(dateString: string): boolean {
 
   return true; // Date matches
 }
+
+export function hasDatePassed(inputDateString?: string): boolean {
+  // Get the current UTC time
+  if (inputDateString) {
+    const inputDate = new Date(inputDateString);
+    const currentDate = new Date();
+    const currentUTC = new Date(currentDate.toISOString());
+
+    // Convert the input date to UTC
+    const inputUTC = new Date(inputDate.toISOString());
+
+    // Compare the input date with the current UTC time
+    return inputUTC < currentUTC;
+  }
+  return true;
+}

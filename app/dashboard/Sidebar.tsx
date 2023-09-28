@@ -70,7 +70,13 @@ function Sidebar() {
     },
     {
       href: "/dashboard/quiz",
-      permissions: ["default_quiz", "admin_quiz"],
+      permissions: ["default_quiz"],
+      icon: <ScrollText size={18} />,
+      text: "Quizzy",
+    },
+    {
+      href: "/dashboard/quiz/editor",
+      permissions: ["admin_quiz"],
       icon: <ScrollText size={18} />,
       text: "Quizzy",
     },

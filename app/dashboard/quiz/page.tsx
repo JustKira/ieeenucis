@@ -9,7 +9,7 @@ export default function Dashboard() {
       <CardHeader>
         <CardTitle>Insights</CardTitle>
       </CardHeader>
-      <CardContent className="grid grid-cols-3 gap-2">
+      <CardContent className="w-full">
         <Card>
           <CardHeader>
             <CardTitle>Quiz</CardTitle>
@@ -18,12 +18,6 @@ export default function Dashboard() {
             <QuizCodeForm />
             <YourQuiz />
           </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Quiz</CardTitle>
-          </CardHeader>
-          <CardContent></CardContent>
         </Card>
       </CardContent>
     </>

@@ -18,8 +18,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: Request) {
-  const { quizName, questionsIds } = (await request.json()) as {
+  const { quizName, totalMarks, questionsIds } = (await request.json()) as {
     quizName: string;
+    totalMarks: number;
     questionsIds: number[];
   };
   const supabase = createRouteHandlerClient<Database>({ cookies });
@@ -27,7 +28,7 @@ export async function POST(request: Request) {
   const quizRes = await supabase
     .schema("quizzy")
     .from("Quiz")
-    .insert({ quizName })
+    .insert({ quizName, totalMarks })
     .select()
     .single();
 

@@ -60,6 +60,10 @@ export async function POST(
   return new NextResponse(
     JSON.stringify({
       ...res,
-    })
+    }),
+    {
+      headers: { "Content-Type": "application/json" },
+      status: res.status,
+    }
   );
 }

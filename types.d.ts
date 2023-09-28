@@ -117,6 +117,7 @@ type Collection = {
 
 interface Choice {
   choice: string;
+  id: Number;
   isAnswer: boolean;
 }
 
@@ -174,6 +175,7 @@ type QuestionNoAnswer = {
 type Quiz = {
   id: number;
   quizName: string;
+  totalMarks: number;
 };
 
 type QuizQuestion = {
@@ -199,6 +201,7 @@ type QuizSchedule = {
   code: string;
   duration: number;
   quizId: number;
+  Quiz: Quiz | null;
   startDate: string;
 };
 
@@ -212,7 +215,7 @@ type UserQuiz = {
   quizScheduleId: number;
   QuizSchedule: Partial<QuizSchedule>;
   attendedAt: string;
-  submitted:boolean;
+  submitted: boolean;
   userId: number;
   quizId: number;
 };
@@ -383,3 +386,27 @@ type TEXTAnswer = {
 };
 
 type QuizAnswers = MCQAnswer | TFAnswer | MULTIAnswer | TEXTAnswer;
+
+type QuizAnswerItems =
+  | {
+      type: "MCQ";
+      id: number;
+      answer: number | null;
+    }
+  | {
+      type: "MULTI";
+      id: number;
+      answers: number[];
+    }
+  | {
+      type: "TF";
+      id: number;
+      answer: boolean | null;
+    }
+  | {
+      type: "TEXT";
+      id: number;
+      answer: string;
+    };
+
+type QuizAnswer = QuizAnswerItems[];

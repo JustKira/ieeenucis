@@ -40,7 +40,7 @@ import {
 import { questionApi } from "@/lib/redux/api/questionApi";
 import { useToast } from "@/components/ui/use-toast";
 import { PostgrestError } from "@supabase/supabase-js";
-import { MultiQuestion } from "@/types";
+import { MCQQuestion, MultiQuestion } from "@/types";
 
 const formSchema = z.object({
   collectionId: z.string(),
@@ -79,14 +79,26 @@ export default function CreateQuestionForm() {
   });
 
   const submitForm = form.handleSubmit(async (data) => {
-    let cleanedData: MultiQuestion | null = null;
+    let cleanedData: MultiQuestion | MCQQuestion | null = null;
 
     if (data.object.type === "MCQ") {
       const trueChoices = data.object.choices.filter(
         (choice) => choice.isAnswer
       );
       if (trueChoices.length >= 2) {
-        cleanedData = { type: "MULTI", choices: data.object.choices };
+        cleanedData = {
+          type: "MULTI",
+          choices: data.object.choices.map((c, id) => {
+            return { ...c, id: id };
+          }),
+        };
+      } else {
+        cleanedData = {
+          type: "MCQ",
+          choices: data.object.choices.map((c, id) => {
+            return { ...c, id: id };
+          }),
+        };
       }
     }
     if (cleanedData) {
@@ -102,6 +114,7 @@ export default function CreateQuestionForm() {
       await addQuestion({
         id: Number(data.collectionId),
         data: {
+          //@ts-ignore
           object: data.object,
           question: data.question,
           score: Number(data.score),

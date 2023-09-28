@@ -16,6 +16,8 @@ import { Content } from "next/font/google";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { Button } from "@/components/ui/button";
 import { QuizAnswers, Question } from "@/types";
+import { useRouter } from "next/navigation";
+
 const formSchema = z
   .discriminatedUnion("type", [
     z.object({
@@ -50,13 +52,19 @@ function QuizLanchedPage() {
     resolver: zodResolver(formSchema),
   });
 
+  const router = useRouter();
+
   const userQuizRes = usersApi.useGetUserQuizQuery(id as string);
+  const [submitQuiz, submitQuizRes] = quizApi.useSubmitQuizMutation();
   const [allAnswerd, setAllAnswerd] = useState<boolean>(false);
   const [getQuizQuestions, getQuizQuestionsRes] =
     quizApi.useLazyGetQuizQuestionsQuery();
 
   useEffect(() => {
-    console.log(userQuizRes.data?.data.QuizSchedule?.quizId);
+    setAllAnswerd(areAllObjectsAnswered());
+  }, []);
+
+  useEffect(() => {
     if (userQuizRes.data?.data.QuizSchedule?.quizId) {
       getQuizQuestions(userQuizRes.data?.data.QuizSchedule?.quizId).then(() => {
         Object.values(form.getValues()).map((v, i) => {
@@ -75,8 +83,8 @@ function QuizLanchedPage() {
             }
           }
         });
+        setAllAnswerd(areAllObjectsAnswered());
       });
-      setAllAnswerd(areAllObjectsAnswered());
     }
   }, [userQuizRes.data?.data.Quiz]);
 
@@ -88,6 +96,7 @@ function QuizLanchedPage() {
     const subscription = form.watch((value, { name, type }) => {});
     return () => subscription.unsubscribe();
   }, [form.watch]);
+
   const QuizRenderer = ({
     qid,
     question,
@@ -182,6 +191,9 @@ function QuizLanchedPage() {
   };
 
   function areAllObjectsAnswered() {
+    if (Object.values(form.getValues()).length === 0) {
+      return false;
+    }
     for (const value of Object.values(form.getValues())) {
       if (value.type === "MCQ" && value.answer === null) {
         return false;
@@ -201,7 +213,7 @@ function QuizLanchedPage() {
 
   return (
     <div className="flex flex-col items-start p-2 xl:flex-row">
-      <div className="sticky z-50 flex flex-col gap-4 top-4 lg:px-2">
+      <div className="sticky z-50 flex flex-col gap-4 top-24 lg:px-2">
         <div className=" w-60">
           {userQuizRes.data?.data?.attendedAt &&
           userQuizRes.data?.data?.QuizSchedule.duration ? (
@@ -293,12 +305,7 @@ function QuizLanchedPage() {
         </Card>
       </div>
       <Form {...form}>
-        <form
-          className="container relative"
-          onSubmit={form.handleSubmit((d) => {
-            console.log(d);
-          })}
-        >
+        <form className="container relative">
           <div className="flex flex-col gap-8 pb-4 ">
             {getQuizQuestionsRes.data?.data.map((d, i) => {
               if (d.Question) {
@@ -315,7 +322,20 @@ function QuizLanchedPage() {
                 return <></>;
               }
             })}
-            <Button variant={"default"} disabled={!allAnswerd}>
+            <Button
+              variant={"default"}
+              disabled={!allAnswerd || submitQuizRes.isLoading}
+              onClick={async () => {
+                if (!userQuizRes.data?.data.QuizSchedule.quizId) return;
+                submitQuiz({
+                  body: form.getValues(),
+                  quizId: userQuizRes.data?.data.QuizSchedule.quizId,
+                  userQuizId: Number(id),
+                });
+                router.push("/dashboard/quiz");
+                window.location.reload();
+              }}
+            >
               Submit
             </Button>
           </div>

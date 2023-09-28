@@ -2,19 +2,30 @@
 import React, { useEffect } from "react";
 
 const page = () => {
-  useEffect(() => {
-    async function fetchtest() {
-      const res = await fetch(
-        "https://dcgmuqkfibypvjrupifr.supabase.co/functions/v1/duedateNotifiy",
-        { body: JSON.stringify({ name: "test" }), method: "POST" }
-      );
-      const data = await res.json();
-      console.log(data);
-    }
-
-    fetchtest();
-  });
-  return <div>page</div>;
+  return (
+    <div className="flex items-center justify-center w-screen h-screen">
+      <Card customClick={(name, id) => console.log(name, id)} />
+    </div>
+  );
 };
 
 export default page;
+
+interface CardProps {
+  customClick: (
+    name?: string,
+    id?: string
+  ) => void | { name: string; id: string };
+}
+
+const Card: React.FC<CardProps> = ({ customClick }) => {
+  return (
+    <button
+      onClick={() => {
+        customClick("asdasd", "123123");
+      }}
+    >
+      asdasdasd
+    </button>
+  );
+};

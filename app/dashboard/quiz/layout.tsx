@@ -4,14 +4,12 @@ import React from "react";
 import usePermission from "@/lib/hooks/usePermission";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import QuickNav from "@/components/ui/QuickNav";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { checkPermission, isLoading } = usePermission();
 
-    const navlinks = [
-    { path: "/", name: "view" },
-    { path: "/editor", name: "editor" },
-  ];
   if (isLoading) {
     return (
       <>
@@ -27,9 +25,41 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       {checkPermission(
         ["default_quiz", "admin_quiz"],
-              <Card className="mt-4 border-none drop-shadow-none dark:drop-shadow-none">
+        <Card className="mt-4 border-none drop-shadow-none dark:drop-shadow-none">
           <CardHeader>
-            <QuickNav parentPath="/quiz" navlinks={navlinks} />
+            <nav className="flex gap-2">
+              {checkPermission(
+                ["admin_quiz"],
+                <>
+                  <Link href={"/dashboard/quiz/editor/collection"}>
+                    <Button
+                      variant={"outline"}
+                      className="capitalize rounded-full"
+                    >
+                      Editor
+                    </Button>
+                  </Link>
+                  <Link href={"/dashboard/quiz/history"}>
+                    <Button
+                      variant={"outline"}
+                      className="capitalize rounded-full"
+                    >
+                      History
+                    </Button>
+                  </Link>
+                </>,
+                <Link href={"/dashboard/quiz"}>
+                  <Button
+                    variant={"outline"}
+                    className="capitalize rounded-full"
+                  >
+                    View
+                  </Button>
+                </Link>,
+
+                false
+              )}
+            </nav>
           </CardHeader>
           <CardContent>{children}</CardContent>
         </Card>,

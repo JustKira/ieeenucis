@@ -52,7 +52,11 @@ export default function EditorPage() {
 
   const submitForm = form.handleSubmit((data) => {
     let questionsIds = questions.map((q) => q.id);
-    addQuiz({ quizName: data.quizName, questionsIds: questionsIds });
+    addQuiz({
+      quizName: data.quizName,
+      totalMarks: totalScore,
+      questionsIds: questionsIds,
+    });
 
     let error = addQuizRes.error as PostgrestError | null;
 
@@ -130,12 +134,12 @@ export default function EditorPage() {
 
                       <FormMessage />
                       <FormDescription>
-                        Quiz name will be also displayed.
+                        Quiz name will not be displayed to the End User.
                       </FormDescription>
                     </FormItem>
                   )}
                 />
-                <Button className="w-fit" variant={"ghost"}>
+                <Button className="w-fit" variant={"outline"}>
                   Create
                 </Button>
               </form>

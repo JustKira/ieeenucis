@@ -4,7 +4,7 @@ type Week = {
 };
 
 export const cal_startDate: string = "2023-10-01T00:00:00.000Z";
-export const cal_offset = 16;
+export const cal_offset = 17;
 //make sure days are = 7
 export const weekData: Week[] = [
   {

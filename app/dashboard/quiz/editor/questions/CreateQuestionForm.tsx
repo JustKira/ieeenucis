@@ -59,7 +59,7 @@ const formSchema = z.object({
         .object({ choice: z.string().min(1), isAnswer: z.boolean() })
         .array(),
     }),
-    z.object({ type: z.literal("TF"), isAnswer: z.boolean() }),
+    z.object({ type: z.literal("TF"), isAnswer: z.boolean().default(false) }),
     z.object({ type: z.literal("TEXT"), format: z.string() }),
   ]),
 });

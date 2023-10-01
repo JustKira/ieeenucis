@@ -31,6 +31,7 @@ import { quizApi } from "@/lib/redux/api/quizApi";
 import { PostgrestError } from "@supabase/supabase-js";
 import { useToast } from "@/components/ui/use-toast";
 import { Question } from "@/types";
+import { marked } from "marked";
 
 const formSchema = z.object({
   quizName: z.string(),
@@ -159,7 +160,13 @@ export default function EditorPage() {
                     <Badge className="w-fit" variant={"ghost"}>
                       {q.questionObject.object.type}
                     </Badge>
-                    <h1>{q.questionObject.question}</h1>
+
+                    <div
+                      className="prose-sm"
+                      dangerouslySetInnerHTML={{
+                        __html: marked.parse(q.questionObject.question ?? ""),
+                      }}
+                    />
                   </Card>
                 </li>
               ))}
@@ -196,7 +203,16 @@ export default function EditorPage() {
                       <Badge className="w-fit" variant={"ghost"}>
                         {q.questionObject.object.type}
                       </Badge>
-                      <h1>{q.questionObject.question}</h1>
+                      <div className="text-left">
+                        <div
+                          className="prose-sm"
+                          dangerouslySetInnerHTML={{
+                            __html: marked.parse(
+                              q.questionObject.question ?? ""
+                            ),
+                          }}
+                        />
+                      </div>
                     </Card>
                   </button>
                 </li>

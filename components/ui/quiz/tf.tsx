@@ -12,6 +12,7 @@ import { QuizAnswerSchema } from "@/app/quiz/[id]/page";
 
 import { RadioGroup, RadioGroupItem } from "../radio-group";
 import { Label } from "../label";
+import { marked } from "marked";
 function Tf({
   index,
   qid,
@@ -34,7 +35,14 @@ function Tf({
     <Card>
       <CardHeader>
         <CardTitle>Q{index + 1}</CardTitle>
-        <CardDescription>{question}</CardDescription>
+        <CardDescription>
+          <div
+            className="prose-sm"
+            dangerouslySetInnerHTML={{
+              __html: marked.parse(question ?? ""),
+            }}
+          />
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <RadioGroup

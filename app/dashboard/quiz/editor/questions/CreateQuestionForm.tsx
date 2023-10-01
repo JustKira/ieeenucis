@@ -41,6 +41,9 @@ import { questionApi } from "@/lib/redux/api/questionApi";
 import { useToast } from "@/components/ui/use-toast";
 import { PostgrestError } from "@supabase/supabase-js";
 import { MCQQuestion, MultiQuestion } from "@/types";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { marked } from "marked";
+import { Separator } from "@/components/ui/separator";
 
 const formSchema = z.object({
   collectionId: z.string(),
@@ -128,6 +131,10 @@ export default function CreateQuestionForm() {
       title: error ? "Error" : "Success",
       description: error ? error.message : "Question Created",
     });
+
+    if (!error) {
+      form.reset();
+    }
   });
 
   if (isLoading) {
@@ -330,24 +337,43 @@ export default function CreateQuestionForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="question"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Question</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Tell us a little bit about yourself"
-                  rows={5}
-                  {...field}
-                />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Tabs defaultValue="edit" className="w-full py-4">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="edit">Edit</TabsTrigger>
+            <TabsTrigger value="prev">Preview</TabsTrigger>
+          </TabsList>{" "}
+          <TabsContent value="edit">
+            <FormField
+              control={form.control}
+              name="question"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Question</FormLabel>
+                  <FormControl>
+                    <Textarea placeholder="lol" rows={10} {...field} />
+                  </FormControl>
+                  <FormDescription>Question now supports MD</FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </TabsContent>
+          <TabsContent
+            value="prev"
+            className="p-2 border rounded-sm border-border/50"
+          >
+            <h1 className="text-sm font-light opacity-50">
+              this is how users will see question
+            </h1>
+            <Separator className="my-0.5" />
+            <div
+              className="prose-sm"
+              dangerouslySetInnerHTML={{
+                __html: marked.parse(form.watch("question") ?? ""),
+              }}
+            />
+          </TabsContent>
+        </Tabs>
         <FormField
           control={form.control}
           name="score"

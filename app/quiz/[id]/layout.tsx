@@ -17,6 +17,7 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
   const [attendQuiz, attendQuizRes] = quizApi.useAttendQuizMutation();
 
   const router = useRouter();
+  const [quizClosed, setQuizClosed] = useState(false);
   const [timePassed, setTimePassed] = useState(false);
   const [rulesRead, setRulesRead] = useState(false);
   // Use useEffect to set the state to true after 3 seconds
@@ -31,6 +32,14 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     userQuizRes.data?.data?.attendedAt,
     userQuizRes.data?.data?.QuizSchedule.duration
   );
+
+  useEffect(() => {
+    if (userQuizRes.data?.data.QuizSchedule?.startDate) {
+      hasDatePassed(userQuizRes.data?.data.QuizSchedule?.startDate)
+        .then((v) => setQuizClosed(v))
+        .catch(() => setQuizClosed(true));
+    }
+  }, [userQuizRes.data]);
 
   if (userQuizRes.isLoading || attendQuizRes.isLoading) {
     return <div>loading...</div>;
@@ -52,13 +61,13 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (hasDatePassed(userQuizRes.data?.data.QuizSchedule?.startDate)) {
-    return (
-      <div className="flex items-center justify-center w-full h-screen">
-        <h1>Quiz Access Denied</h1>
-      </div>
-    );
-  }
+  // if (hasDatePassed(userQuizRes.data?.data.QuizSchedule?.startDate)) {
+  //   return (
+  //     <div className="flex items-center justify-center w-full h-screen">
+  //       <h1>Quiz Access Denied</h1>
+  //     </div>
+  //   );
+  // }
 
   if (hasPassedTimer) {
     return (

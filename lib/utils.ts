@@ -97,18 +97,38 @@ export function isDateMatch(dateString: string): boolean {
   return true; // Date matches
 }
 
-export function hasDatePassed(inputDateString?: string): boolean {
-  // Get the current UTC time
+export async function hasDatePassed(
+  inputDateString?: string
+): Promise<boolean> {
+  console.log("timer");
   if (inputDateString) {
-    const inputDate = new Date(inputDateString);
-    const currentDate = new Date();
-    const currentUTC = new Date(currentDate.toISOString());
+    try {
+      // Make an HTTP request to your API to get the current time
+      const response = await fetch(`${window.location.origin}/api/timer`);
 
-    // Convert the input date to UTC
-    const inputUTC = new Date(inputDate.toISOString());
+      if (response.ok) {
+        const serverTimeData = await response.json();
+        console.log("time", serverTimeData);
+        const inputDate = new Date(inputDateString);
 
-    // Compare the input date with the current UTC time
-    return inputUTC < currentUTC;
+        // Extract the server time from the response
+        const serverTime = new Date(serverTimeData.now);
+
+        // Convert the input date to UTC
+        const inputUTC = new Date(inputDate.toISOString());
+
+        // Compare the input date with the current UTC time
+        return inputUTC < serverTime;
+      } else {
+        console.error("Failed to fetch server time from your API");
+        // Default to true if there's an error fetching server time
+        return true;
+      }
+    } catch (error) {
+      console.error("Error fetching server time from your API:", error);
+      // Default to true if there's an error fetching server time
+      return true;
+    }
   }
   return true;
 }

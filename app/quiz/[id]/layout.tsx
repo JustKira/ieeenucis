@@ -20,6 +20,30 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
   const [quizClosed, setQuizClosed] = useState(false);
   const [timePassed, setTimePassed] = useState(false);
   const [rulesRead, setRulesRead] = useState(false);
+
+  const [counter, setCounter] = useState(0);
+
+  const { hasPassedTimer, remainingTime } = useCountdownTimer(
+    userQuizRes.data?.data?.attendedAt,
+    userQuizRes.data?.data?.QuizSchedule.duration
+  );
+  useEffect(() => {
+    setCounter(remainingTime);
+  }, [remainingTime]);
+
+  useEffect(() => {
+    const incrementCounter = () => {
+      setCounter((prevCounter) => prevCounter - 1000);
+    };
+
+    // Create an interval that calls incrementCounter every 1000ms (1 second)
+    const intervalId = setInterval(incrementCounter, 1000);
+
+    // Clean up the interval when the component unmounts or when counter reaches a certain value
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
   // Use useEffect to set the state to true after 3 seconds
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -28,10 +52,6 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
 
     return () => clearTimeout(timer); // Clean up the timer on unmount
   }, []);
-  const { hasPassedTimer } = useCountdownTimer(
-    userQuizRes.data?.data?.attendedAt,
-    userQuizRes.data?.data?.QuizSchedule.duration
-  );
 
   useEffect(() => {
     if (userQuizRes.data?.data.QuizSchedule?.startDate) {
@@ -69,7 +89,7 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (hasPassedTimer) {
+  if (counter < 0) {
     return (
       <div className="flex items-center justify-center w-full h-screen">
         <h1>Times Out</h1>

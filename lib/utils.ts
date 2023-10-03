@@ -100,7 +100,7 @@ export function isDateMatch(dateString: string): boolean {
 export async function hasDatePassed(
   inputDateString?: string
 ): Promise<boolean> {
-  console.log("timer");
+
   if (inputDateString) {
     try {
       // Make an HTTP request to your API to get the current time
@@ -108,7 +108,8 @@ export async function hasDatePassed(
 
       if (response.ok) {
         const serverTimeData = await response.json();
-        console.log("time", serverTimeData);
+
+        console.log("time", serverTimeData, inputDateString);
         const inputDate = new Date(inputDateString);
 
         // Extract the server time from the response

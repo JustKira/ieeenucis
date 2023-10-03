@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { hasDatePassed } from "../utils";
 
 function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
   const [countdown, setCountdown] = useState({
@@ -10,16 +11,31 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
 
   useEffect(() => {
     let examDate: Date | undefined;
+    let serverTime : Date | undefined;
     if (startAt) {
       examDate = new Date(Date.parse(startAt + "Z")); // Append 'Z' to ensure UTC time
     }
 
-    const calculateCountdown = () => {
-      if (examDate && durationInMinutes) {
+  //   async function  getTime() {
+  //   const response = await fetch(`${window.location.origin}/api/timer`);
+
+  //   if (response.ok) {
+  //     const serverTimeData = await response.json();
+  //     serverTime = serverTimeData.now
+  //     console.log(serverTime)
+  //   }
+  //  }
+
+   
+   const calculateCountdown = () => {
+     if (examDate && durationInMinutes) {
+        // getTime()
+   
         const remainingTime =
           examDate.getTime() + durationInMinutes * 60000 - Date.now();
-
+//console.log(remainingTime)
         if (remainingTime <= 0) {
+          //hasDatePassed()
           setHasPassedTimer(true);
         } else {
           const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);

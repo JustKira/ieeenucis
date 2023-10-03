@@ -61,13 +61,13 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  // if (hasDatePassed(userQuizRes.data?.data.QuizSchedule?.startDate)) {
-  //   return (
-  //     <div className="flex items-center justify-center w-full h-screen">
-  //       <h1>Quiz Access Denied</h1>
-  //     </div>
-  //   );
-  // }
+  if (quizClosed) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <h1>Quiz Access Denied</h1>
+      </div>
+    );
+  }
 
   if (hasPassedTimer) {
     return (

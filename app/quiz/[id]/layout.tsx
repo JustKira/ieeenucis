@@ -107,7 +107,7 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setTimePassed(true);
-    }, 7000); // 3000 milliseconds = 3 seconds
+    }, 1000); // 3000 milliseconds = 3 seconds
 
     return () => clearTimeout(timer); // Clean up the timer on unmount
   }, []);

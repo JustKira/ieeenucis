@@ -90,6 +90,8 @@ export async function POST(
   }
 
   let totalScore = 0;
+
+  console.log(quizRes.data);
   quizRes.data.forEach(({ Question }) => {
     console.log("Loop");
     if (!Question) return;
@@ -102,12 +104,13 @@ export async function POST(
     const _qId: number = Question.id;
     body.forEach((answer) => {
       if (answer.id === _qId && _q.type === answer.type) {
-        console.log("Loop");
         if (_q.type === "MCQ" && answer.type === "MCQ") {
-          console.log("MCQ");
-          if (answer.answer && _q.choices[answer.answer].isAnswer) {
-            totalScore += _qScore;
-            console.log(totalScore);
+          if (answer.answer !== null) {
+            console.log(answer.answer);
+            if (_q.choices[answer.answer].isAnswer === true) {
+              totalScore += _qScore;
+              console.log(totalScore);
+            }
           }
         }
 
@@ -123,9 +126,10 @@ export async function POST(
           _q.choices.map((q) =>
             q.isAnswer === true ? ++correctAnswersNum : null
           );
-
+          console.log(correctAnswersNum);
           const incrementScore = _qScore * (1 / correctAnswersNum);
           console.log(incrementScore);
+
           answer.answers.map((a, id) => {
             if (a === 1 && _q.choices[id].isAnswer) {
               totalScore += incrementScore;

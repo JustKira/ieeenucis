@@ -33,7 +33,11 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
 
     async function getTime() {
       const response = await fetch(`${window.location.origin}/api/timer`, {
+        method: "POST",
         cache: "no-store",
+        body: JSON.stringify({
+          updater: Math.random(),
+        }),
       });
 
       if (response.ok) {

@@ -24,6 +24,7 @@ function Timer({
     <Alert>
       <Icon icon={"oi:timer"} className="w-4 h-4" />
       <AlertTitle>Quiz Timer</AlertTitle>
+      <h1 className="hidden">{remainingTime}</h1>
       <AlertDescription>
         {Math.floor((remainingTime / (1000 * 60 * 60)) % 24)
           .toString()

@@ -89,7 +89,7 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (counter < 0) {
+  if (counter < 0 && userQuizRes.data?.data?.attended) {
     return (
       <div className="flex items-center justify-center w-full h-screen">
         <h1>Times Out</h1>

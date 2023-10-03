@@ -123,8 +123,9 @@ export async function hasDatePassed(
         // Convert the input date to UTC
         const inputUTC = new Date(inputDate.toISOString());
 
+        // console.log(inputUTC.getTime(), serverTime.getTime());
         // Compare the input date with the current UTC time
-        return inputUTC < serverTime;
+        return inputUTC.getTime() < serverTime.getTime();
       } else {
         console.error("Failed to fetch server time from your API");
         // Default to true if there's an error fetching server time

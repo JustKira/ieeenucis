@@ -132,9 +132,7 @@ export default function CreateQuestionForm() {
       description: error ? error.message : "Question Created",
     });
 
-    if (!error) {
-      form.reset();
-    }
+    form.resetField();
   });
 
   if (isLoading) {

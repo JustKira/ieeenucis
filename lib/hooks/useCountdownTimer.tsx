@@ -1,6 +1,4 @@
 import { useState, useEffect } from "react";
-import { hasDatePassed } from "../utils";
-import { NamedImportBindings } from "typescript";
 
 function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
   const [countdown, setCountdown] = useState({
@@ -9,11 +7,11 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
     seconds: "00",
   });
   const [hasPassedTimer, setHasPassedTimer] = useState(false);
-
+  const [remainingTime, setRemainingTime] = useState<number>(0); // Initialize remainingTime
+  const [start, setStart] = useState(false);
   useEffect(() => {
     let examDate: Date | undefined;
     let serverTime: Date | undefined;
-    let remainingTime: number = 0;
     if (startAt) {
       examDate = new Date(Date.parse(startAt + "Z")); // Append 'Z' to ensure UTC time
     }
@@ -24,15 +22,14 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
       if (response.ok) {
         const serverTimeData = await response.json();
         serverTime = new Date(serverTimeData.now);
-        // console.log(serverTime);
 
         if (examDate && durationInMinutes && serverTime) {
-          remainingTime =
+          const newRemainingTime =
             examDate.getTime() +
             durationInMinutes * 60000 -
             serverTime.getTime();
-
-          // console.log(remainingTime);
+          setStart(true);
+          setRemainingTime(newRemainingTime); // Update remainingTime using state
         }
       }
     }
@@ -40,12 +37,11 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
     getTime();
 
     const calculateCountdown = () => {
+      if (!start) return;
       if (examDate && durationInMinutes) {
-        // getTime()
-        --remainingTime;
-        // console.log(remainingTime);
+        setRemainingTime((prevRemainingTime) => prevRemainingTime - 1000); // Update remainingTime using state
+
         if (remainingTime <= 0) {
-          //hasDatePassed()
           setHasPassedTimer(true);
         } else {
           const hours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
@@ -70,7 +66,7 @@ function useCountdownTimer(startAt?: string, durationInMinutes?: number) {
     };
   }, [startAt, durationInMinutes]);
 
-  return { countdown, hasPassedTimer };
+  return { countdown, hasPassedTimer, remainingTime };
 }
 
 export default useCountdownTimer;

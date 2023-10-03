@@ -10,7 +10,10 @@ function Timer({
   startDate: string;
   duration: number;
 }) {
-  const { countdown, hasPassedTimer } = useCountdownTimer(startDate, duration);
+  const { countdown, hasPassedTimer, remainingTime } = useCountdownTimer(
+    startDate,
+    duration
+  );
 
   useEffect(() => {
     if (hasPassedTimer) {
@@ -22,7 +25,18 @@ function Timer({
       <Icon icon={"oi:timer"} className="w-4 h-4" />
       <AlertTitle>Quiz Timer</AlertTitle>
       <AlertDescription>
-        {countdown.hours}h : {countdown.minutes}m : {countdown.seconds}s
+        {Math.floor((remainingTime / (1000 * 60 * 60)) % 24)
+          .toString()
+          .padStart(2, "0")}
+        h :
+        {Math.floor((remainingTime / (1000 * 60)) % 60)
+          .toString()
+          .padStart(2, "0")}
+        m :
+        {Math.floor((remainingTime / 1000) % 60)
+          .toString()
+          .padStart(2, "0")}
+        s
       </AlertDescription>
     </Alert>
   );

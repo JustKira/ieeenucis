@@ -100,11 +100,16 @@ export function isDateMatch(dateString: string): boolean {
 export async function hasDatePassed(
   inputDateString?: string
 ): Promise<boolean> {
-
   if (inputDateString) {
     try {
       // Make an HTTP request to your API to get the current time
-      const response = await fetch(`${window.location.origin}/api/timer`);
+      const response = await fetch(`${window.location.origin}/api/timer`, {
+        method: "POST",
+        cache: "no-store",
+        body: JSON.stringify({
+          updater: Math.random(),
+        }),
+      });
 
       if (response.ok) {
         const serverTimeData = await response.json();

@@ -10,15 +10,47 @@ function Timer({
   startDate: string;
   duration: number;
 }) {
-  const { countdown, hasPassedTimer, remainingTime } = useCountdownTimer(
-    startDate,
-    duration
-  );
+  const [start, setStart] = useState<boolean>();
   const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    setCounter(remainingTime);
-  }, [remainingTime]);
+    let examDate: Date | undefined;
+    let serverTime: Date | undefined;
+    if (startDate) {
+      examDate = new Date(Date.parse(startDate + "Z")); // Append 'Z' to ensure UTC time
+    }
+
+    async function getTime() {
+      const response = await fetch(`${window.location.origin}/api/timer`, {
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const serverTimeData = await response.json();
+        serverTime = new Date(serverTimeData.now);
+
+        if (examDate && duration && serverTime) {
+          const newRemainingTime =
+            examDate.getTime() + duration * 60000 - serverTime.getTime();
+          setStart(true);
+          setCounter(newRemainingTime); // Update remainingTime using state
+        }
+      }
+    }
+
+    getTime();
+  }, [startDate, duration]);
+
+  useEffect(() => {
+    if (!start) return;
+    let examDate: Date | undefined;
+    if (startDate) {
+      examDate = new Date(Date.parse(startDate + "Z")); // Append 'Z' to ensure UTC time
+    }
+    if (examDate && duration) {
+      setCounter((prevRemainingTime) => prevRemainingTime - 1000); // Update remainingTime using state
+    }
+  }, [start]);
 
   useEffect(() => {
     const incrementCounter = () => {
@@ -33,11 +65,7 @@ function Timer({
       clearInterval(intervalId);
     };
   }, []);
-  useEffect(() => {
-    if (hasPassedTimer) {
-      window.location.reload();
-    }
-  }, [hasPassedTimer]);
+
   return (
     <Alert>
       <Icon icon={"oi:timer"} className="w-4 h-4" />

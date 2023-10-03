@@ -21,15 +21,70 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
   const [timePassed, setTimePassed] = useState(false);
   const [rulesRead, setRulesRead] = useState(false);
 
+  const [start, setStart] = useState<boolean>();
   const [counter, setCounter] = useState(0);
 
-  const { hasPassedTimer, remainingTime } = useCountdownTimer(
-    userQuizRes.data?.data?.attendedAt,
-    userQuizRes.data?.data?.QuizSchedule.duration
-  );
   useEffect(() => {
-    setCounter(remainingTime);
-  }, [remainingTime]);
+    let examDate: Date | undefined;
+    let serverTime: Date | undefined;
+    if (userQuizRes.data?.data?.attendedAt) {
+      examDate = new Date(Date.parse(userQuizRes.data?.data?.attendedAt + "Z")); // Append 'Z' to ensure UTC time
+    }
+
+    async function getTime() {
+      const response = await fetch(`${window.location.origin}/api/timer`, {
+        cache: "no-store",
+      });
+
+      if (response.ok) {
+        const serverTimeData = await response.json();
+        serverTime = new Date(serverTimeData.now);
+
+        if (
+          examDate &&
+          userQuizRes.data?.data?.QuizSchedule.duration &&
+          serverTime
+        ) {
+          const newRemainingTime =
+            examDate.getTime() +
+            userQuizRes.data?.data?.QuizSchedule.duration * 60000 -
+            serverTime.getTime();
+          setStart(true);
+          setCounter(newRemainingTime); // Update remainingTime using state
+        }
+      }
+    }
+
+    getTime();
+  }, [
+    userQuizRes.data?.data?.attendedAt,
+    userQuizRes.data?.data?.QuizSchedule.duration,
+  ]);
+
+  useEffect(() => {
+    if (!start) return;
+    let examDate: Date | undefined;
+    if (userQuizRes.data?.data?.attendedAt) {
+      examDate = new Date(Date.parse(userQuizRes.data?.data?.attendedAt + "Z")); // Append 'Z' to ensure UTC time
+    }
+    if (examDate && userQuizRes.data?.data?.QuizSchedule.duration) {
+      setCounter((prevRemainingTime) => prevRemainingTime - 1000); // Update remainingTime using state
+    }
+  }, [start]);
+
+  useEffect(() => {
+    const incrementCounter = () => {
+      setCounter((prevCounter) => prevCounter - 1000);
+    };
+
+    // Create an interval that calls incrementCounter every 1000ms (1 second)
+    const intervalId = setInterval(incrementCounter, 1000);
+
+    // Clean up the interval when the component unmounts or when counter reaches a certain value
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
 
   useEffect(() => {
     const incrementCounter = () => {
@@ -54,8 +109,8 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (userQuizRes.data?.data.QuizSchedule?.startDate) {
-      hasDatePassed(userQuizRes.data?.data.QuizSchedule?.startDate)
+    if (userQuizRes.data?.data?.QuizSchedule.startDate) {
+      hasDatePassed(userQuizRes.data?.data?.QuizSchedule.startDate)
         .then((v) => setQuizClosed(v))
         .catch(() => setQuizClosed(true));
     }

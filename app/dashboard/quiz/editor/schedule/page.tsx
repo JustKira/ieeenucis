@@ -76,12 +76,18 @@ function SchedulePage() {
     }
   }, [createScheduleRes.data]);
   const onSubmit = form.handleSubmit(async (data) => {
-    const nextDay = new Date(data.startDate);
-    nextDay.setDate(nextDay.getDate() + 1);
+    let cleandate = data.startDate;
+
+    cleandate.getTimezoneOffset();
+
+    cleandate.setHours((-1 * cleandate.getTimezoneOffset()) / 60 + 23);
+    cleandate.setMinutes(59);
+
+    console.log(cleandate);
     //@ts-ignore
     await createSchedule({
       ...data,
-      startDate: nextDay.toISOString(),
+      startDate: data.startDate.toISOString(),
       quizId: Number(data.quizId),
       duration: convertToMinutes(snapTime(convertToTime(data.duration))),
     });
@@ -205,7 +211,17 @@ function SchedulePage() {
                           mode="single"
                           selected={field.value}
                           // @ts-ignore
-                          onSelect={field.onChange}
+                          onSelect={(d) => {
+                            d?.getDate();
+
+                            if (d) {
+                              let date = d;
+
+                              //date.setDate(d.getDate() + 1);
+
+                              field.onChange(date);
+                            }
+                          }}
                           disabled={(date: any) =>
                             date > new Date("2050-01-01") ||
                             date < new Date(new Date().getDate() - 1)
@@ -219,6 +235,8 @@ function SchedulePage() {
                   </FormItem>
                 )}
               />
+
+              {form.watch("startDate")?.toISOString()}
               <div className="flex flex-col max-w-sm gap-4">
                 <Label className="flex flex-col gap-2">
                   Quiz Duration{" "}

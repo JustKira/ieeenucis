@@ -97,6 +97,29 @@ export function isDateMatch(dateString: string): boolean {
   return true; // Date matches
 }
 
+function millisecondsToTime(milliseconds: number): string {
+  // Calculate hours, minutes, and seconds
+  const hours = Math.floor(milliseconds / 3600000); // 1 hour = 3600000 milliseconds
+  milliseconds %= 3600000;
+  const minutes = Math.floor(milliseconds / 60000); // 1 minute = 60000 milliseconds
+  milliseconds %= 60000;
+  const seconds = Math.floor(milliseconds / 1000); // 1 second = 1000 milliseconds
+
+  // Build the time string
+  let timeString = "";
+  if (hours > 0) {
+    timeString += `${hours} hour${hours > 1 ? "s" : ""}, `;
+  }
+  if (minutes > 0) {
+    timeString += `${minutes} minute${minutes > 1 ? "s" : ""}, `;
+  }
+  if (seconds > 0) {
+    timeString += `${seconds} second${seconds > 1 ? "s" : ""}`;
+  }
+
+  return timeString;
+}
+
 export async function hasDatePassed(
   inputDateString?: string
 ): Promise<boolean> {
@@ -121,11 +144,17 @@ export async function hasDatePassed(
         const serverTime = new Date(serverTimeData.now);
 
         // Convert the input date to UTC
-        const inputUTC = new Date(inputDate.toISOString());
+        const quizDate = new Date(inputDate.toISOString());
 
-        // console.log(inputUTC.getTime(), serverTime.getTime());
+        console.log(
+          `Input ${quizDate.getSeconds()}`,
+          `ServerTime ${serverTime.getSeconds()}`
+        );
+        let remaningMillSec = quizDate.getTime() - serverTime.getTime();
+
+        console.log(millisecondsToTime(remaningMillSec));
         // Compare the input date with the current UTC time
-        return inputUTC.getTime() < serverTime.getTime();
+        return quizDate.getTime() <= serverTime.getTime();
       } else {
         console.error("Failed to fetch server time from your API");
         // Default to true if there's an error fetching server time

@@ -144,7 +144,7 @@ export async function POST(
 
   console.log(totalScore.toFixed(2));
   // for (const question of quizRes.data) {
-  //   //@ts-ignore
+  //   //@ts-ignore:
   //   console.log(question);
   //   const _q: QuestionTypes = question.Question?.questionObject.object as any;
   //   console.log(_q.type);

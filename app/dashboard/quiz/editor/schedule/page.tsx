@@ -236,7 +236,6 @@ function SchedulePage() {
                 )}
               />
 
-              {form.watch("startDate")?.toISOString()}
               <div className="flex flex-col max-w-sm gap-4">
                 <Label className="flex flex-col gap-2">
                   Quiz Duration{" "}

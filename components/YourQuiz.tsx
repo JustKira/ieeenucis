@@ -3,7 +3,7 @@ import { quizApi } from "@/lib/redux/api/quizApi";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { isDateMatch } from "../lib/utils";
+import { hasDatePassed, isDateMatch } from "../lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -27,70 +27,82 @@ function YourQuiz() {
         }
         return 0;
       });
+
       //@ts-ignore
       setSortedData(sorted);
     }
   }, [data]);
-  return (
-    <div className="flex flex-col gap-1 py-2">
-      {sortedData.reverse().map((d) => {
-        if (d.attended && d.submitted) {
-          return (
-            <Card className="opacity-50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base font-light">
-                  {d.QuizSchedule?.name}
-                  <Badge>{"Submitted"}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <h1>{`${d.autoGrade} / ${d.Quiz?.totalMarks}`}</h1>
-                {d.QuizSchedule.startDate ? (
-                  <h1 className="text-xs font-extralight">
-                    {format(new Date(d.QuizSchedule.startDate), "PPP")}
-                  </h1>
-                ) : (
-                  <></>
-                )}
-              </CardContent>
-            </Card>
-          );
-        }
-        return (
-          <Card className="">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base font-light">
-                {d.QuizSchedule?.name}
-                <Badge>{d.attended ? "Attended" : "Not Attended"}</Badge>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {d.QuizSchedule?.startDate ? (
+
+  const YourQuizObject = ({ d }: { d: UserQuiz }) => {
+    const [start, setStart] = useState<boolean>(false);
+    useEffect(() => {
+      hasDatePassed(d.QuizSchedule?.startDate).then(() => {
+        setStart(start);
+      });
+    }, []);
+    if (d.attended && d.submitted) {
+      return (
+        <Card className="opacity-50">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base font-light">
+              {d.QuizSchedule?.name}
+              <Badge>{"Submitted"}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <h1>{`${d.autoGrade} / ${d.Quiz?.totalMarks}`}</h1>
+            {d.QuizSchedule.startDate ? (
+              <h1 className="text-xs font-extralight">
+                {format(new Date(d.QuizSchedule.startDate), "PPP")}
+              </h1>
+            ) : (
+              <></>
+            )}
+          </CardContent>
+        </Card>
+      );
+    }
+    return (
+      <Card className="">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base font-light">
+            {d.QuizSchedule?.name}
+            <Badge>{d.attended ? "Attended" : "Not Attended"}</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {d.QuizSchedule?.startDate ? (
+            <>
+              {start ? (
                 <>
-                  {isDateMatch(d.QuizSchedule?.startDate) ? (
-                    <>
-                      <Link href={`/quiz/${d.id}`} className="py-1">
-                        <Button className="h-8">Start</Button>
-                      </Link>
-                      <Separator className="my-4" />
-                    </>
-                  ) : (
-                    <></>
-                  )}
+                  <Link href={`/quiz/${d.id}`} className="py-1">
+                    <Button className="h-8">Start</Button>
+                  </Link>
+                  <Separator className="my-4" />
                 </>
               ) : (
                 <></>
               )}
-              {d.QuizSchedule.startDate ? (
-                <h1 className="text-xs font-extralight">
-                  {format(new Date(d.QuizSchedule.startDate), "PPP")}
-                </h1>
-              ) : (
-                <></>
-              )}
-            </CardContent>
-          </Card>
-        );
+            </>
+          ) : (
+            <></>
+          )}
+          {d.QuizSchedule.startDate ? (
+            <h1 className="text-xs font-extralight">
+              {format(new Date(d.QuizSchedule.startDate), "PPP")}
+            </h1>
+          ) : (
+            <></>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-1 py-2">
+      {sortedData.reverse().map((d) => {
+        return <YourQuizObject d={d} />;
       })}
     </div>
   );

@@ -168,3 +168,59 @@ export async function hasDatePassed(
   }
   return true;
 }
+
+export async function dateWithIn(inputDateString?: string): Promise<boolean> {
+  if (inputDateString) {
+    try {
+      // Make an HTTP request to your API to get the current time
+      const response = await fetch(`${window.location.origin}/api/timer`, {
+        method: "POST",
+        cache: "no-store",
+        body: JSON.stringify({
+          updater: Math.random(),
+        }),
+      });
+
+      if (response.ok) {
+        const serverTimeData = await response.json();
+
+        console.log("time", serverTimeData, inputDateString);
+        const inputDate = new Date(inputDateString);
+
+        // Extract the server time from the response
+        const serverTime = new Date(serverTimeData.now);
+
+        // Convert the input date to UTC
+        const startDate = new Date(inputDate.toISOString());
+
+        const endDate = new Date(inputDate.toISOString());
+        startDate.setHours(0);
+        startDate.setMinutes(0);
+        console.log(
+          `Start ${startDate.toISOString()}`,
+          `End ${endDate.toISOString()}`,
+          `ServerTime ${serverTime.toISOString()}`
+        );
+        let remaningMillSec = startDate.getTime() - serverTime.getTime();
+
+        console.log(millisecondsToTime(remaningMillSec));
+        // Compare the input date with the current UTC time
+        console.log(serverTime.getTime() > startDate.getTime());
+        console.log(serverTime.getTime() < endDate.getTime());
+        return (
+          serverTime.getTime() > startDate.getTime() &&
+          serverTime.getTime() < endDate.getTime()
+        );
+      } else {
+        console.error("Failed to fetch server time from your API");
+        // Default to true if there's an error fetching server time
+        return true;
+      }
+    } catch (error) {
+      console.error("Error fetching server time from your API:", error);
+      // Default to true if there's an error fetching server time
+      return true;
+    }
+  }
+  return true;
+}

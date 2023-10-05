@@ -3,7 +3,7 @@ import { quizApi } from "@/lib/redux/api/quizApi";
 import React, { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
-import { hasDatePassed, isDateMatch } from "../lib/utils";
+import { dateWithIn, hasDatePassed, isDateMatch } from "../lib/utils";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { format } from "date-fns";
@@ -36,9 +36,11 @@ function YourQuiz() {
   const YourQuizObject = ({ d }: { d: UserQuiz }) => {
     const [start, setStart] = useState<boolean>(false);
     useEffect(() => {
-      hasDatePassed(d.QuizSchedule?.startDate).then(() => {
-        setStart(start);
-      });
+      if (d.QuizSchedule?.startDate) {
+        dateWithIn(d.QuizSchedule?.startDate).then((v) => {
+          setStart(v);
+        });
+      }
     }, []);
     if (d.attended && d.submitted) {
       return (

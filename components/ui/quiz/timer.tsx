@@ -46,17 +46,6 @@ function Timer({
   }, [startDate, duration]);
 
   useEffect(() => {
-    if (!start) return;
-    let examDate: Date | undefined;
-    if (startDate) {
-      examDate = new Date(Date.parse(startDate + "Z")); // Append 'Z' to ensure UTC time
-    }
-    if (examDate && duration) {
-      setCounter((prevRemainingTime) => prevRemainingTime - 1000); // Update remainingTime using state
-    }
-  }, [start]);
-
-  useEffect(() => {
     const incrementCounter = () => {
       setCounter((prevCounter) => prevCounter - 1000);
     };

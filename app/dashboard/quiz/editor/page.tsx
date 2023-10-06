@@ -69,7 +69,7 @@ export default function EditorPage() {
 
   useEffect(() => {
     if (collectionId) {
-      getQuestions(collectionId);
+      getQuestions({ id: collectionId });
     }
     return () => {};
   }, [collectionId]);

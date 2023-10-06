@@ -14,6 +14,13 @@ export const collectionApi = quizzyApi.injectEndpoints({
       }),
       invalidatesTags: ["collection"],
     }),
+    removeCollection: build.mutation<void, number>({
+      query: (cid) => ({
+        url: `collections?cid=${cid}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["collection"],
+    }),
   }),
   overrideExisting: false,
 });

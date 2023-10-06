@@ -194,7 +194,7 @@ export default function CreateQuestionForm() {
     if (watchType === "MCQ") {
       return (
         <>
-          <Card>
+          <Card className="min-w-[550px]">
             <CardHeader>
               <CardTitle>
                 MCQ Editor{" "}

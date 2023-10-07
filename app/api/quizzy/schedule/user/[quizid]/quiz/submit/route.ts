@@ -107,7 +107,7 @@ export async function POST(
         if (_q.type === "MCQ" && answer.type === "MCQ") {
           if (answer.answer !== null) {
             console.log(answer.answer);
-            if (_q.choices[answer.answer].isAnswer === true) {
+            if (_q.choices[answer.answer]?.isAnswer === true) {
               totalScore += _qScore;
               console.log(totalScore);
             }
@@ -142,7 +142,7 @@ export async function POST(
     });
   });
 
-  console.log(totalScore.toFixed(2));
+  //console.log(totalScore.toFixed(2));
   // for (const question of quizRes.data) {
   //   //@ts-ignore:
   //   console.log(question);
@@ -155,7 +155,7 @@ export async function POST(
   if (totalScore < 0) {
     totalScore = 0;
   }
-  console.log(totalScore.toFixed(2));
+  //console.log(totalScore.toFixed(2));
   quizRes.data.map((d, id) => d.Question);
   const res = await supabase
     .schema("quizzy")

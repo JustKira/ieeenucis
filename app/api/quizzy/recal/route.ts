@@ -7,10 +7,24 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
+  const searchParams = request.nextUrl.searchParams;
+
+  const sid = searchParams.get("sid");
+
+  if (!sid) {
+    return new NextResponse(
+      JSON.stringify({
+        error: "Sid not provided",
+      }),
+      { status: 400 }
+    );
+  }
+
   const schedulesRes = await supabase
     .schema("quizzy")
     .from("QuizSchedule")
-    .select("id,Quiz(*)");
+    .select("id,Quiz(*)")
+    .eq("id", sid);
 
   if (schedulesRes.error) {
     return new NextResponse(
@@ -54,7 +68,7 @@ export async function GET(request: NextRequest) {
               if (answer.answer !== null) {
                 console.log(answer.answer);
 
-                if (_q.choices[answer.answer].isAnswer === true) {
+                if (_q.choices[answer.answer]?.isAnswer === true) {
                   totalScore += _qScore;
                   console.log(totalScore);
                 }

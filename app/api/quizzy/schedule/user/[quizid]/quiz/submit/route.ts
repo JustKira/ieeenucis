@@ -104,40 +104,42 @@ export async function POST(
     const _qId: number = Question.id;
     body.forEach((answer) => {
       if (answer.id === _qId && _q.type === answer.type) {
-        if (_q.type === "MCQ" && answer.type === "MCQ") {
-          if (answer.answer !== null) {
-            console.log(answer.answer);
-            if (_q.choices[answer.answer]?.isAnswer === true) {
+        try {
+          if (_q.type === "MCQ" && answer.type === "MCQ") {
+            if (answer.answer !== null) {
+              console.log(answer.answer);
+              if (_q.choices[answer.answer]?.isAnswer === true) {
+                totalScore += _qScore;
+                console.log(totalScore);
+              }
+            }
+          }
+
+          if (_q.type === "TF" && answer.type === "TF") {
+            console.log("TF");
+            if (_q.isAnswer === answer.answer) {
               totalScore += _qScore;
-              console.log(totalScore);
             }
           }
-        }
+          if (_q.type === "MULTI" && answer.type === "MULTI") {
+            let correctAnswersNum = 0;
 
-        if (_q.type === "TF" && answer.type === "TF") {
-          console.log("TF");
-          if (_q.isAnswer === answer.answer) {
-            totalScore += _qScore;
+            _q.choices.map((q) =>
+              q.isAnswer === true ? ++correctAnswersNum : null
+            );
+            console.log(correctAnswersNum);
+            const incrementScore = _qScore * (1 / correctAnswersNum);
+            console.log(incrementScore);
+
+            answer.answers.map((a, id) => {
+              if (a === 1 && _q.choices[id].isAnswer) {
+                totalScore += incrementScore;
+              } else if (a === 1 && !_q.choices[id].isAnswer) {
+                totalScore -= incrementScore;
+              }
+            });
           }
-        }
-        if (_q.type === "MULTI" && answer.type === "MULTI") {
-          let correctAnswersNum = 0;
-
-          _q.choices.map((q) =>
-            q.isAnswer === true ? ++correctAnswersNum : null
-          );
-          console.log(correctAnswersNum);
-          const incrementScore = _qScore * (1 / correctAnswersNum);
-          console.log(incrementScore);
-
-          answer.answers.map((a, id) => {
-            if (a === 1 && _q.choices[id].isAnswer) {
-              totalScore += incrementScore;
-            } else if (a === 1 && !_q.choices[id].isAnswer) {
-              totalScore -= incrementScore;
-            }
-          });
-        }
+        } catch (error) {}
       }
     });
   });

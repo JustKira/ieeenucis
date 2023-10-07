@@ -6,6 +6,8 @@ import {
   UserQuiz,
   QuizQuestion,
   QuizAnswer,
+  QuizAnalytics,
+  Question,
 } from "@/types";
 export const quizApi = quizzyApi.injectEndpoints({
   endpoints: (build) => ({
@@ -64,6 +66,40 @@ export const quizApi = quizzyApi.injectEndpoints({
     }),
     getQuizQuestions: build.query<ApiResponse<QuizQuestion[]>, number>({
       query: (id) => `quiz/${id}/questions`,
+    }),
+
+    getQuizAnalytics: build.query<
+      ApiResponse<{ id: number; analytics: QuizAnalytics }>,
+      number
+    >({
+      query: (id) => `analytics?sid=${id}`,
+      providesTags: ["analytics"],
+    }),
+    generateQuizAnalytics: build.mutation<void, number>({
+      query: (id) => ({
+        url: `analytics?sid=${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["analytics"],
+    }),
+    getQuestions: build.query<
+      ApiResponse<{ id: number; questionObject: Question }[]>,
+      number
+    >({
+      query: (id) => ({
+        url: `analytics/questions?sid=${id}`,
+        method: "GET",
+      }),
+      transformResponse: (
+        response: ApiResponse<
+          { Question: { id: number; questionObject: Question } }[]
+        >
+      ) => {
+        let formatedData: { id: number; questionObject: Question }[] =
+          response.data.map((question) => question.Question);
+        return { ...response, data: formatedData };
+      },
+      providesTags: ["questions", "analytics"],
     }),
   }),
   overrideExisting: false,

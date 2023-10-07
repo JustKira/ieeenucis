@@ -35,9 +35,9 @@ export async function GET(request: NextRequest) {
       .select("Question(*)")
       .eq("quizId", s.Quiz.id);
 
-    usersRes.data?.map((ur) => {
+    usersRes.data?.map(async (ur) => {
       let totalScore = 0;
-      console.log(ur.userId);
+      console.log(ur.userId, ur.quizScheduleId);
       quizRes.data?.forEach(({ Question }) => {
         if (!Question) return;
 
@@ -87,8 +87,19 @@ export async function GET(request: NextRequest) {
             }
           }
         });
-        console.log(`${totalScore} / ${s.Quiz?.totalMarks}`);
       });
+      await supabase
+        .schema("quizzy")
+        .from("UserQuiz")
+        .update({ autoGrade: totalScore })
+        .eq("userId", ur.userId)
+        .eq("quizScheduleId", ur.quizScheduleId)
+        .select()
+        .single()
+        .then((s) => {
+          console.log(s.data?.autoGrade, s.data?.userId);
+        });
+      console.log(`${totalScore} / ${s.Quiz?.totalMarks}`);
     });
   });
 

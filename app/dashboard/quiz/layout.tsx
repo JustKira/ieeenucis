@@ -47,6 +47,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       History
                     </Button>
                   </Link>
+                  <Link href={"/dashboard/quiz/analytic"}>
+                    <Button
+                      variant={"outline"}
+                      className="capitalize rounded-full"
+                    >
+                      {"Sokar Analytics <3"}
+                    </Button>
+                  </Link>
                 </>,
                 <Link href={"/dashboard/quiz"}>
                   <Button

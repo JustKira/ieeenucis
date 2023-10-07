@@ -410,3 +410,38 @@ type QuizAnswerItems =
     };
 
 type QuizAnswer = QuizAnswerItems[];
+
+interface QuizAnalyticsMCQ {
+  questionId: number;
+  type: "MCQ";
+  correctPerc: number;
+  true: number;
+  false: number;
+}
+
+interface QuizAnalyticsMULTI {
+  questionId: number;
+  type: "MULTI";
+  correctAnswers: {
+    percentage: number;
+    true: number;
+    false: number;
+  }[];
+  true: number;
+  false: number;
+  correctPerc: number;
+}
+
+interface QuizAnalyticsTF {
+  questionId: number;
+  type: "TF";
+  correctPerc: number;
+  true: number;
+  false: number;
+}
+type QuizAnalyticsItems =
+  | QuizAnalyticsMCQ
+  | QuizAnalyticsTF
+  | QuizAnalyticsMULTI;
+
+type QuizAnalytics = QuizAnalyticsItems[];

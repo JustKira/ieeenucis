@@ -157,9 +157,14 @@ export default function EditorPage() {
               {questions.map((q, id) => (
                 <li key={id}>
                   <Card className={`p-3 flex flex-col gap-2 items-start`}>
-                    <Badge className="w-fit" variant={"ghost"}>
-                      {q.questionObject.object.type}
-                    </Badge>
+                    <div className="flex justify-between w-full gap-2">
+                      <Badge className="flex gap-2 w-fit" variant={"ghost"}>
+                        {q.questionObject.object.type}
+                      </Badge>
+                      <h1 className="text-xs font-light opacity-70 hover:opacity-100">
+                        ID {q.id}
+                      </h1>
+                    </div>
 
                     <div
                       className="prose-sm"
@@ -200,9 +205,15 @@ export default function EditorPage() {
                           : ""
                       }`}
                     >
-                      <Badge className="w-fit" variant={"ghost"}>
-                        {q.questionObject.object.type}
-                      </Badge>
+                      <div className="flex justify-between w-full gap-2">
+                        <Badge className="flex gap-2 w-fit" variant={"ghost"}>
+                          {q.questionObject.object.type}
+                        </Badge>
+                        <h1 className="text-xs font-light opacity-70 hover:opacity-100">
+                          {" "}
+                          ID {q.id}
+                        </h1>
+                      </div>
                       <div className="text-left">
                         <div
                           className="prose-sm"

@@ -33,7 +33,7 @@ const AnalyticsRenderer = ({
         <li>
           Correct Percentage{" "}
           <span>
-            {quizAnalyics.correctPerc * 100}
+            {(quizAnalyics.correctPerc * 100).toFixed(2)}
             {"%"}
           </span>
         </li>
@@ -62,7 +62,7 @@ const AnalyticsRenderer = ({
         <li>
           Correct Percentage{" "}
           <span>
-            {quizAnalyics.correctPerc * 100}
+            {(quizAnalyics.correctPerc * 100).toFixed(2)}
             {"%"}
           </span>
         </li>
@@ -219,14 +219,21 @@ function page() {
             return (
               <Card>
                 <CardHeader>
-                  <CardDescription className="flex gap-2">
-                    <Badge variant={"ghost"}>{d.type}</Badge>
-                    {question.questionObject.question}
+                  <CardDescription className="flex flex-col gap-2">
+                    <div className="flex justify-between w-full gap-2">
+                      <Badge className="flex gap-2 w-fit" variant={"ghost"}>
+                        {question.questionObject.object.type}
+                      </Badge>
+                      <h1 className="text-xs font-light opacity-70 hover:opacity-100">
+                        ID {question.id}
+                      </h1>
+                    </div>
+                    <h1>{question.questionObject.question}</h1>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ul>
-                    <li>
+                    <li className="flex gap-1">
                       <QuestionRenderer
                         questionObject={question.questionObject}
                       />

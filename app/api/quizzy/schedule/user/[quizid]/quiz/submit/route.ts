@@ -139,7 +139,9 @@ export async function POST(
               }
             });
           }
-        } catch (error) {}
+        } catch (error) {
+          console.log("Temp");
+        }
       }
     });
   });

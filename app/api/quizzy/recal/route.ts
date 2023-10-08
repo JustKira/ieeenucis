@@ -64,41 +64,43 @@ export async function GET(request: NextRequest) {
         //@ts-ignore
         ur.answers.forEach((answer) => {
           if (answer.id === _qId && _q.type === answer.type) {
-            if (_q.type === "MCQ" && answer.type === "MCQ") {
-              if (answer.answer !== null) {
-                console.log(answer.answer);
+            try {
+              if (_q.type === "MCQ" && answer.type === "MCQ") {
+                if (answer.answer !== null) {
+                  console.log(answer.answer);
 
-                if (_q.choices[answer.answer]?.isAnswer === true) {
+                  if (_q.choices[answer.answer]?.isAnswer === true) {
+                    totalScore += _qScore;
+                    console.log(totalScore);
+                  }
+                }
+              }
+
+              if (_q.type === "TF" && answer.type === "TF") {
+                console.log("TF");
+                if (_q.isAnswer === answer.answer) {
                   totalScore += _qScore;
-                  console.log(totalScore);
                 }
               }
-            }
-
-            if (_q.type === "TF" && answer.type === "TF") {
-              console.log("TF");
-              if (_q.isAnswer === answer.answer) {
-                totalScore += _qScore;
+              if (_q.type === "MULTI" && answer.type === "MULTI") {
+                let correctAnswersNum = 0;
+                //@ts-check
+                _q.choices.map((q: any) =>
+                  q.isAnswer === true ? ++correctAnswersNum : null
+                );
+                console.log(correctAnswersNum);
+                const incrementScore = _qScore * (1 / correctAnswersNum);
+                console.log(incrementScore);
+                //@ts-check
+                answer.answers.map((a: any, id: any) => {
+                  if (a === 1 && _q.choices[id].isAnswer) {
+                    totalScore += incrementScore;
+                  } else if (a === 1 && !_q.choices[id].isAnswer) {
+                    totalScore -= incrementScore;
+                  }
+                });
               }
-            }
-            if (_q.type === "MULTI" && answer.type === "MULTI") {
-              let correctAnswersNum = 0;
-              //@ts-check
-              _q.choices.map((q: any) =>
-                q.isAnswer === true ? ++correctAnswersNum : null
-              );
-              console.log(correctAnswersNum);
-              const incrementScore = _qScore * (1 / correctAnswersNum);
-              console.log(incrementScore);
-              //@ts-check
-              answer.answers.map((a: any, id: any) => {
-                if (a === 1 && _q.choices[id].isAnswer) {
-                  totalScore += incrementScore;
-                } else if (a === 1 && !_q.choices[id].isAnswer) {
-                  totalScore -= incrementScore;
-                }
-              });
-            }
+            } catch (error) {}
           }
         });
       });

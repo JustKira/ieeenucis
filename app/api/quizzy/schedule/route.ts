@@ -35,3 +35,31 @@ export async function POST(request: NextRequest) {
     { headers: { "Content-Type": "application/json" }, status: res.status }
   );
 }
+
+export async function DELETE(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const sid = searchParams.get("sid");
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+  if (!sid) {
+    return new NextResponse(
+      JSON.stringify({
+        error: "not QuestionId was provided in search params add sid={id}",
+      }),
+      { status: 404 }
+    );
+  }
+  const res = await supabase
+    .schema("quizzy")
+    .from("QuizSchedule")
+    .delete()
+    .eq("id", Number(sid));
+
+  return new NextResponse(
+    res.error
+      ? JSON.stringify({
+          ...res,
+        })
+      : null,
+    { status: res.status }
+  );
+}

@@ -32,10 +32,60 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { useToast } from "@/components/ui/use-toast";
 import { Question } from "@/types";
 import { marked } from "marked";
+import { useDebouncedState } from "@react-hookz/web";
+import { Label } from "@/components/ui/label";
+import { Icon } from "@iconify/react";
 
 const formSchema = z.object({
   quizName: z.string(),
 });
+
+const QuestionRenderer = ({ questionObject }: { questionObject: Question }) => {
+  if (questionObject.object.type === "MCQ") {
+    return (
+      <ul className="font-sm font-light [&>li]:flex [&>li]:gap-2 opacity-50">
+        {questionObject.object.choices.map((c, id) => (
+          <li key={id}>
+            <Icon
+              icon={
+                c.isAnswer
+                  ? "material-symbols:circle"
+                  : "material-symbols:circle-outline"
+              }
+            />
+            {c.choice}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (questionObject.object.type === "MULTI") {
+    return (
+      <ul className="font-sm font-light [&>li]:flex [&>li]:gap-2 opacity-50">
+        {questionObject.object.choices.map((c, id) => (
+          <li key={id}>
+            <Icon
+              icon={
+                c.isAnswer
+                  ? "material-symbols:circle"
+                  : "material-symbols:circle-outline"
+              }
+            />
+            {c.choice}
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  if (questionObject.object.type === "TF") {
+    return (
+      <h1 className="text-xs font-light opacity-50">{`answer ${questionObject.object.isAnswer}`}</h1>
+    );
+  }
+  return <></>;
+};
 
 export default function EditorPage() {
   const { data, isLoading } = collectionApi.useGetCollectionQuery();
@@ -43,6 +93,18 @@ export default function EditorPage() {
   const [addQuiz, addQuizRes] = quizApi.useAddQuizMutation();
   const [collectionId, setCollectionId] = useState<number | null>(null);
   const { toast } = useToast();
+
+  const [filter, setFilter] = useState<
+    {
+      id: number;
+      questionObject: Question;
+    }[]
+  >([]);
+  const [searchQuery, setSearchQuery] = useDebouncedState<string | null>(
+    null,
+    500,
+    1000
+  );
   const [questions, setQuestions] = useState<
     { id: number; questionObject: Question }[]
   >([]);
@@ -50,7 +112,20 @@ export default function EditorPage() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
   });
-
+  useEffect(() => {
+    if (searchQuery && filter) {
+      if (questionsRes.data?.data) {
+        const filteredQuestions = questionsRes.data?.data.filter((q) =>
+          q.questionObject.question
+            ?.toLowerCase()
+            .includes(searchQuery.toLowerCase())
+        );
+        setFilter(filteredQuestions);
+      }
+    } else {
+      if (questionsRes.data?.data) setFilter(questionsRes.data?.data);
+    }
+  }, [searchQuery, questionsRes.data?.data]);
   const submitForm = form.handleSubmit((data) => {
     let questionsIds = questions.map((q) => q.id);
     addQuiz({
@@ -119,7 +194,7 @@ export default function EditorPage() {
   return (
     <>
       <CardContent>
-        <div className="flex gap-4">
+        <div className="flex gap-4 ">
           <section className="flex flex-col w-1/2 gap-4">
             <Form {...form}>
               <form onSubmit={submitForm} className="flex flex-col gap-2">
@@ -189,8 +264,12 @@ export default function EditorPage() {
                 </SelectContent>
               </Select>
             </div>
+            <div className="flex flex-col gap-1 py-2">
+              <Label>Search</Label>
+              <Input onChange={(e) => setSearchQuery(e.target.value)} />
+            </div>
             <ul className="flex flex-col gap-3 py-4">
-              {questionsRes.data?.data.map((q, id) => (
+              {filter.map((q, id) => (
                 <li key={id}>
                   <button
                     className="w-full"
@@ -224,6 +303,7 @@ export default function EditorPage() {
                           }}
                         />
                       </div>
+                      <QuestionRenderer questionObject={q.questionObject} />
                     </Card>
                   </button>
                 </li>

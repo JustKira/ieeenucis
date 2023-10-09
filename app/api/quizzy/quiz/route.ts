@@ -57,3 +57,31 @@ export async function POST(request: Request) {
     { status: res.status }
   );
 }
+
+export async function DELETE(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const qid = searchParams.get("qid");
+  const supabase = createRouteHandlerClient<Database>({ cookies });
+  if (!qid) {
+    return new NextResponse(
+      JSON.stringify({
+        error: "not QuestionId was provided in search params add qid={id}",
+      }),
+      { status: 404 }
+    );
+  }
+  const res = await supabase
+    .schema("quizzy")
+    .from("Quiz")
+    .delete()
+    .eq("id", Number(qid));
+
+  return new NextResponse(
+    res.error
+      ? JSON.stringify({
+          ...res,
+        })
+      : null,
+    { status: res.status }
+  );
+}

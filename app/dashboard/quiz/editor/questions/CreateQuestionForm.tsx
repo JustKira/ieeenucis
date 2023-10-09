@@ -73,6 +73,12 @@ export default function CreateQuestionForm() {
   const { toast } = useToast();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      collectionId: "",
+      question: "",
+      object: { type: "TF", isAnswer: false },
+      score: "1",
+    },
   });
 
   const formFeildArray = useFieldArray({
@@ -132,7 +138,20 @@ export default function CreateQuestionForm() {
       description: error ? error.message : "Question Created",
     });
 
-    //form.resetField();
+    form.setValue("question", "");
+    form.setValue("score", "1");
+
+    if (
+      form.getValues("object.type") === "MCQ" ||
+      form.getValues("object.type") === "MULTI"
+    ) {
+      formFeildArray.fields.map((f, index) => {
+        formFeildArray.update(index, { choice: "", isAnswer: false });
+      });
+    } else {
+      form.setValue("object.type", "TF");
+      //form.setValue("object.isAnswer", false);
+    }
   });
 
   if (isLoading) {
@@ -144,6 +163,21 @@ export default function CreateQuestionForm() {
     );
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Tab") {
+      e.preventDefault(); // Prevent the default tab behavior
+      const { selectionStart, selectionEnd, value } = e.currentTarget;
+      const newValue =
+        value.substring(0, selectionStart) +
+        "      " + // Insert 4 spaces
+        value.substring(selectionEnd);
+      e.currentTarget.value = newValue;
+      e.currentTarget.setSelectionRange(selectionStart + 6, selectionStart + 6);
+
+      form.setValue("question", newValue);
+      // Move cursor 4 positions forward
+    }
+  };
   const CollectionSelectorItems = () => {
     if (data?.data) {
       return (
@@ -194,7 +228,7 @@ export default function CreateQuestionForm() {
     if (watchType === "MCQ") {
       return (
         <>
-          <Card className="min-w-[550px]">
+          <Card className="min-w-[650px]">
             <CardHeader>
               <CardTitle>
                 MCQ Editor{" "}
@@ -348,7 +382,13 @@ export default function CreateQuestionForm() {
                 <FormItem>
                   <FormLabel>Question</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="lol" rows={10} {...field} />
+                    <Textarea
+                      placeholder="lol"
+                      rows={10}
+                      onKeyDown={handleKeyDown}
+                      tabIndex={-1}
+                      {...field}
+                    />
                   </FormControl>
                   <FormDescription>Question now supports MD</FormDescription>
                   <FormMessage />

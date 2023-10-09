@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardHeader,
 } from "@/components/ui/card";
+import { QuickLoader } from "@/components/ui/loaders";
 import {
   Select,
   SelectContent,
@@ -19,6 +20,7 @@ import { quizApi } from "@/lib/redux/api/quizApi";
 import { Question, QuizAnalytics, QuizAnalyticsItems } from "@/types";
 import { Icon } from "@iconify/react";
 import { get } from "http";
+import { marked } from "marked";
 import React, { useEffect, useState } from "react";
 import { object } from "zod";
 
@@ -205,6 +207,7 @@ function page() {
       </div>
 
       <div className="flex flex-col gap-2">
+        {generateAnalyticsRes.isLoading ? <QuickLoader loading /> : <></>}
         {getAnalyticRes.data?.data?.analytics
           .slice()
           ?.sort((a, b) => a.correctPerc - b.correctPerc)
@@ -228,7 +231,14 @@ function page() {
                         ID {question.id}
                       </h1>
                     </div>
-                    <h1>{question.questionObject.question}</h1>
+                    <div
+                      className="prose-sm"
+                      dangerouslySetInnerHTML={{
+                        __html: marked.parse(
+                          question.questionObject.question ?? ""
+                        ),
+                      }}
+                    />
                   </CardDescription>
                 </CardHeader>
                 <CardContent>

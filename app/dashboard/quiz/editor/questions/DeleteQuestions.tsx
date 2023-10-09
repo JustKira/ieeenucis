@@ -44,7 +44,7 @@ function DeleteQuestions() {
     return <></>;
   };
   return (
-    <Card className="w-full">
+    <Card className="hidden w-full lg:block">
       <CardHeader>
         <CardTitle>Delete</CardTitle>
       </CardHeader>

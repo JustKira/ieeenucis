@@ -2,6 +2,19 @@
 import { Database } from "@/lib/database";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React, { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -19,6 +32,8 @@ import {
 import { QuizSchedule, User } from "@/types";
 import { User2 } from "lucide-react";
 import { format } from "date-fns";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
+import { cn } from "@/lib/utils";
 
 function page() {
   const supabase = createClientComponentClient<Database>();
@@ -33,6 +48,7 @@ function page() {
       }[]
     | null
   >([]);
+  const [open, setOpen] = React.useState(false);
 
   const [selected, setSelected] = useState<number>();
   const [userQuiz, setUserQuiz] = useState<
@@ -104,7 +120,52 @@ function page() {
             <CardTitle>Quiz</CardTitle>
           </CardHeader>
           <CardContent>
-            <Select onValueChange={(v) => setSelected(Number(v))}>
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-[200px] justify-between"
+                >
+                  {selected
+                    ? schedules?.find((framework) => framework.id === selected)
+                        ?.name
+                    : "Select framework..."}
+                  <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[200px] p-0">
+                <Command>
+                  <CommandInput placeholder="Search Quiz..." className="h-9" />
+                  <CommandEmpty>No Quiz found.</CommandEmpty>
+                  <CommandGroup className="max-h-[300px] overflow-auto">
+                    {schedules?.map((framework) => (
+                      <CommandItem
+                        key={framework.id}
+                        onSelect={() => {
+                          setSelected(
+                            framework.id === selected ? -1 : framework.id
+                          );
+                          setOpen(false);
+                        }}
+                      >
+                        {framework.name}
+                        <CheckIcon
+                          className={cn(
+                            "ml-auto h-4 w-4",
+                            selected === framework.id
+                              ? "opacity-100"
+                              : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+            {/* <Select onValueChange={(v) => setSelected(Number(v))}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Quiz Schedule" />
               </SelectTrigger>
@@ -113,7 +174,7 @@ function page() {
                   <SelectItem value={s.id.toString()}>{s.name}</SelectItem>
                 ))}
               </SelectContent>
-            </Select>
+            </Select> */}
 
             <div className="flex flex-col gap-2 py-2">
               {userQuiz?.map((d) => {

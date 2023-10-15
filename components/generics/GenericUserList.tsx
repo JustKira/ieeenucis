@@ -8,6 +8,7 @@ import { User } from "@/types";
 import { ScrollArea } from "../ui/scroll-area";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { Icon } from "@iconify/react";
 
 const GenericUserList = ({
   onClick,
@@ -103,6 +104,9 @@ const GenericUserList = ({
               >
                 <div className="flex flex-col items-start justify-start space-y-1">
                   <h1 className="text-base font-bold capitalize">
+                    <span className="flex items-center gap-2 text-sm font-light text-primary">
+                      ID {user.id}
+                    </span>{" "}
                     {user.firstname} {user.lastname}
                   </h1>
                   <h1 className="text-xs font-light capitalize">

@@ -52,7 +52,7 @@ export const usersSupaApi = createApi({
         list: (User & { UserRole: { Role: { id: number } | null }[] })[];
         count: number;
       },
-      { page: number; perPage: number; textSearch: string | undefined | null }
+      { page: number; perPage: number; textSearch?: string | undefined | null }
     >({
       queryFn: async (args, api, extraOptions, baseQuery) => {
         const supabase = supaClientHandler;

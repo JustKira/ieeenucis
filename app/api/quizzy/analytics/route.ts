@@ -131,90 +131,96 @@ export async function POST(request: NextRequest) {
       const _q: QuestionTypes = Question.questionObject.object as any;
 
       const _qId: number = Question.id;
-      //@ts-ignore
-      ur.answers.forEach((answer) => {
+
+      try {
         //@ts-ignore
-        console.log(ur.answers.length);
-        const targetObject = analyticObject.find(
-          (item) => item.questionId === _qId
-        );
-        if (!targetObject) return;
+        ur.answers.forEach((answer) => {
+          //@ts-ignore
+          console.log(ur.answers.length);
+          const targetObject = analyticObject.find(
+            (item) => item.questionId === _qId
+          );
+          if (!targetObject) return;
 
-        console.log("x");
-        if (
-          answer.id === _qId &&
-          _q.type === answer.type &&
-          targetObject.type === answer.type
-        ) {
-          try {
-            if (
-              _q.type === "MCQ" &&
-              answer.type === "MCQ" &&
-              targetObject.type === "MCQ"
-            ) {
-              if (_q.choices[answer.answer]?.isAnswer === true) {
-                return (targetObject.true = targetObject.true + 1);
-              }
-              targetObject.false = targetObject.false + 1;
-            }
-
-            if (
-              _q.type === "TF" &&
-              answer.type === "TF" &&
-              targetObject.type === "TF"
-            ) {
-              if (_q.isAnswer === answer.answer) {
-                targetObject.true = targetObject.true + 1;
-              } else {
+          console.log("x");
+          if (
+            answer.id === _qId &&
+            _q.type === answer.type &&
+            targetObject.type === answer.type
+          ) {
+            try {
+              if (
+                _q.type === "MCQ" &&
+                answer.type === "MCQ" &&
+                targetObject.type === "MCQ"
+              ) {
+                if (_q.choices[answer.answer]?.isAnswer === true) {
+                  return (targetObject.true = targetObject.true + 1);
+                }
                 targetObject.false = targetObject.false + 1;
               }
-            }
-            if (
-              _q.type === "MULTI" &&
-              answer.type === "MULTI" &&
-              targetObject.type === "MULTI"
-            ) {
-              let correctAnswersNum = 0;
-              //@ts-check
-              _q.choices.map((q: any) =>
-                q.isAnswer === true ? ++correctAnswersNum : null
-              );
-              const answersLen = _q.choices.length;
-              let streak = 0;
-              //@ts-ignore
-              for (let i = 0; i < answersLen; i++) {
-                console.log(answer.answers[i]);
 
-                if (answer.answers[i] == 1 && _q.choices[i].isAnswer) {
-                  ++targetObject.correctAnswers[i].true;
-                  ++streak;
-                } else if (answer.answers[i] == 1 && !_q.choices[i].isAnswer) {
-                  ++targetObject.correctAnswers[i].false;
-                } else if (
-                  (answer.answers[i] === null || answer.answers[i] === 0) &&
-                  _q.choices[i].isAnswer
-                ) {
-                  ++targetObject.correctAnswers[i].false;
-                } else if (
-                  answer.answers[i] === undefined &&
-                  _q.choices[i].isAnswer
-                ) {
-                  ++targetObject.correctAnswers[i].false;
+              if (
+                _q.type === "TF" &&
+                answer.type === "TF" &&
+                targetObject.type === "TF"
+              ) {
+                if (_q.isAnswer === answer.answer) {
+                  targetObject.true = targetObject.true + 1;
                 } else {
-                  ++targetObject.correctAnswers[i].true;
-                  ++streak;
+                  targetObject.false = targetObject.false + 1;
                 }
               }
+              if (
+                _q.type === "MULTI" &&
+                answer.type === "MULTI" &&
+                targetObject.type === "MULTI"
+              ) {
+                let correctAnswersNum = 0;
+                //@ts-check
+                _q.choices.map((q: any) =>
+                  q.isAnswer === true ? ++correctAnswersNum : null
+                );
+                const answersLen = _q.choices.length;
+                let streak = 0;
+                //@ts-ignore
+                for (let i = 0; i < answersLen; i++) {
+                  console.log(answer.answers[i]);
 
-              if (streak === answersLen) {
-                ++targetObject.true;
-              } else {
-                ++targetObject.false;
+                  if (answer.answers[i] == 1 && _q.choices[i].isAnswer) {
+                    ++targetObject.correctAnswers[i].true;
+                    ++streak;
+                  } else if (
+                    answer.answers[i] == 1 &&
+                    !_q.choices[i].isAnswer
+                  ) {
+                    ++targetObject.correctAnswers[i].false;
+                  } else if (
+                    (answer.answers[i] === null || answer.answers[i] === 0) &&
+                    _q.choices[i].isAnswer
+                  ) {
+                    ++targetObject.correctAnswers[i].false;
+                  } else if (
+                    answer.answers[i] === undefined &&
+                    _q.choices[i].isAnswer
+                  ) {
+                    ++targetObject.correctAnswers[i].false;
+                  } else {
+                    ++targetObject.correctAnswers[i].true;
+                    ++streak;
+                  }
+                }
+
+                if (streak === answersLen) {
+                  ++targetObject.true;
+                } else {
+                  ++targetObject.false;
+                }
               }
-            }
-          } catch (error) {}
-        }
-      });
+            } catch (error) {}
+          }
+        });
+      } catch (error) {}
     });
   });
   analyticObject.forEach((ao) => {

@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   const supabase = createRouteHandlerClient<Database>({ cookies });
 
+  const now = new Date();
   const searchParams = request.nextUrl.searchParams;
 
   const sid = searchParams.get("sid");
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
   const schedulesRes = await supabase
     .schema("quizzy")
     .from("QuizSchedule")
-    .select("id,Quiz(*)")
+    .select("id,duration,Quiz(*)")
     .eq("id", sid);
 
   if (schedulesRes.error) {
@@ -40,16 +41,22 @@ export async function GET(request: NextRequest) {
       .schema("quizzy")
       .from("UserQuiz")
       .select("*")
-      .eq("submitted", true)
       .eq("quizScheduleId", s.id);
 
     const quizRes = await supabase
       .schema("quizzy")
       .from("QuizQuestions")
-      .select("Question(*)")
+      .select("Question(*),Quiz(*)")
       .eq("quizId", s.Quiz.id);
 
     usersRes.data?.map(async (ur) => {
+      const examDate = new Date(Date.parse(ur.attendedAt + "Z"));
+
+      const quizDur = s.duration * 60000;
+
+      const isPassed = examDate.getTime() + quizDur - now.getTime();
+
+      if (isPassed > 0) return;
       let totalScore = 0;
       console.log(ur.userId, ur.quizScheduleId);
       quizRes.data?.forEach(({ Question }) => {
@@ -61,53 +68,56 @@ export async function GET(request: NextRequest) {
         const _qScore: number = Number(Question.questionObject.score) as any;
 
         const _qId: number = Question.id;
-        //@ts-ignore
-        ur.answers.forEach((answer) => {
-          if (answer.id === _qId && _q.type === answer.type) {
-            try {
-              if (_q.type === "MCQ" && answer.type === "MCQ") {
-                if (answer.answer !== null) {
-                  console.log(answer.answer);
 
-                  if (_q.choices[answer.answer]?.isAnswer === true) {
+        try {
+          //@ts-ignore
+          ur.answers.forEach((answer) => {
+            if (answer.id === _qId && _q.type === answer.type) {
+              try {
+                if (_q.type === "MCQ" && answer.type === "MCQ") {
+                  if (answer.answer !== null) {
+                    console.log(answer.answer);
+
+                    if (_q.choices[answer.answer]?.isAnswer === true) {
+                      totalScore += _qScore;
+                      console.log(totalScore);
+                    }
+                  }
+                }
+
+                if (_q.type === "TF" && answer.type === "TF") {
+                  console.log("TF");
+                  if (_q.isAnswer === answer.answer) {
                     totalScore += _qScore;
-                    console.log(totalScore);
                   }
                 }
-              }
-
-              if (_q.type === "TF" && answer.type === "TF") {
-                console.log("TF");
-                if (_q.isAnswer === answer.answer) {
-                  totalScore += _qScore;
+                if (_q.type === "MULTI" && answer.type === "MULTI") {
+                  let correctAnswersNum = 0;
+                  //@ts-check
+                  _q.choices.map((q: any) =>
+                    q.isAnswer === true ? ++correctAnswersNum : null
+                  );
+                  console.log(correctAnswersNum);
+                  const incrementScore = _qScore * (1 / correctAnswersNum);
+                  console.log(incrementScore);
+                  //@ts-check
+                  answer.answers.map((a: any, id: any) => {
+                    if (a === 1 && _q.choices[id].isAnswer) {
+                      totalScore += incrementScore;
+                    } else if (a === 1 && !_q.choices[id].isAnswer) {
+                      totalScore -= incrementScore;
+                    }
+                  });
                 }
-              }
-              if (_q.type === "MULTI" && answer.type === "MULTI") {
-                let correctAnswersNum = 0;
-                //@ts-check
-                _q.choices.map((q: any) =>
-                  q.isAnswer === true ? ++correctAnswersNum : null
-                );
-                console.log(correctAnswersNum);
-                const incrementScore = _qScore * (1 / correctAnswersNum);
-                console.log(incrementScore);
-                //@ts-check
-                answer.answers.map((a: any, id: any) => {
-                  if (a === 1 && _q.choices[id].isAnswer) {
-                    totalScore += incrementScore;
-                  } else if (a === 1 && !_q.choices[id].isAnswer) {
-                    totalScore -= incrementScore;
-                  }
-                });
-              }
-            } catch (error) {}
-          }
-        });
+              } catch (error) {}
+            }
+          });
+        } catch (error) {}
       });
       await supabase
         .schema("quizzy")
         .from("UserQuiz")
-        .update({ autoGrade: totalScore })
+        .update({ autoGrade: totalScore, submitted: true })
         .eq("userId", ur.userId)
         .eq("quizScheduleId", ur.quizScheduleId)
         .select()

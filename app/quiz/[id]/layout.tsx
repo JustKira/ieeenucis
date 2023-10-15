@@ -54,7 +54,7 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
             examDate.getTime() +
             userQuizRes.data?.data?.QuizSchedule.duration * 60000 -
             serverTime.getTime();
-          console.log(newRemainingTime);
+
           return newRemainingTime;
           // Update remainingTime using state
         }
@@ -118,13 +118,13 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (userQuizRes.data?.data.submitted) {
-    return (
-      <div className="flex items-center justify-center w-full h-screen">
-        <h1>Quiz Have Been Submitted</h1>
-      </div>
-    );
-  }
+  // if (userQuizRes.data?.data.submitted) {
+  //   return (
+  //     <div className="flex items-center justify-center w-full h-screen">
+  //       <h1>Quiz Have Been Submitted</h1>
+  //     </div>
+  //   );
+  // }
 
   if (quizClosed) {
     return (
@@ -158,11 +158,6 @@ function QuizLayout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col prose dark:prose-invert">
             <h3>Notes</h3>
             <ol>
-              <li>
-                Once you click "Attend," a countdown will begin. If it reaches
-                zero and you haven't submitted the quiz, your answers won't be
-                calculated.
-              </li>
               <li>
                 In multi-question quizzes, if you select all answers, it will
                 result in a negative score.

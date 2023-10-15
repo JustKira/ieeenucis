@@ -55,7 +55,7 @@ function QuizLanchedPage() {
   const router = useRouter();
 
   const userQuizRes = usersApi.useGetUserQuizQuery(id as string);
-  const [submitQuiz, submitQuizRes] = quizApi.useSubmitQuizMutation();
+
   const [allAnswerd, setAllAnswerd] = useState<boolean>(false);
   const [getQuizQuestions, getQuizQuestionsRes] =
     quizApi.useLazyGetQuizQuestionsQuery();
@@ -322,22 +322,9 @@ function QuizLanchedPage() {
                 return <></>;
               }
             })}
-            <Button
-              variant={"default"}
-              disabled={!allAnswerd || submitQuizRes.isLoading}
-              onClick={async () => {
-                if (!userQuizRes.data?.data.QuizSchedule.quizId) return;
-                submitQuiz({
-                  body: form.getValues(),
-                  quizId: userQuizRes.data?.data.QuizSchedule.quizId,
-                  userQuizId: Number(id),
-                });
-                router.push("/dashboard/quiz");
-                window.location.reload();
-              }}
-            >
-              Submit
-            </Button>
+            <h1 className="text-xs font-light ">
+              Quiz is auto submitted after it Times Out
+            </h1>
           </div>
         </form>
       </Form>

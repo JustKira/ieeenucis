@@ -101,6 +101,14 @@ export const quizApi = quizzyApi.injectEndpoints({
       },
       providesTags: ["questions", "analytics"],
     }),
+    recalQuiz: build.mutation<void, number>({
+      query: (id) => ({
+        url: `recal/single?qid=${id}`,
+        method: "GET",
+      }),
+
+      invalidatesTags: ["user-quiz"],
+    }),
   }),
   overrideExisting: false,
 });

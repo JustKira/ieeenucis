@@ -6,6 +6,8 @@ import { PostgrestError } from "@supabase/supabase-js";
 import { Button } from "../ui/button";
 import { User } from "@/types";
 import { ScrollArea } from "../ui/scroll-area";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
 
 const GenericUserList = ({
   onClick,
@@ -13,30 +15,65 @@ const GenericUserList = ({
   singleSelection,
   multipleSelection,
   multiple,
+  search,
 }: {
   onClick: (user: User) => void;
   per: number;
   singleSelection?: number | null;
   multipleSelection?: number[];
   multiple?: boolean;
+  search?: boolean;
 }) => {
   const [page, setPage] = useState<number>(0);
   const [trigger, setTrigger] = useState<boolean>(false);
+
+  const [searchText, setSeachText] = useState<string | null>(null);
   const { data, isError, isLoading, error } = useGetMultipleUsersQuery({
     page: page,
     perPage: per,
+    textSearch: searchText,
   });
 
   useEffect(() => {
     setTrigger(!trigger);
   }, [singleSelection, multipleSelection]);
 
+  useEffect(() => {
+    setPage(0);
+  }, [searchText]);
   return (
     <ListErrorLoadingWrapper
       isError={isError}
       isLoading={isLoading}
       error={error as PostgrestError}
     >
+      {search ? (
+        <div className="py-4">
+          <Label>Search</Label>
+          <div className="flex items-center justify-center gap-2">
+            <Input
+              value={searchText ?? ""}
+              onChange={(e) => {
+                if (e.target.value) {
+                  if (e.target.value.includes(" ")) {
+                    // If there are spaces in e.target.value, return without updating searchText.
+                    return;
+                  }
+                  // If there are no spaces, update searchText.
+                  setSeachText(e.target.value);
+                }
+              }}
+            />
+            <Button onClick={() => setSeachText(null)}>Reset</Button>
+          </div>
+          <h1 className="py-1 text-xs font-light capitalize opacity-50">
+            only firstname dont use Spaces wont work, note its not a smart
+            search you need to type firstname fully or it won't work
+          </h1>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="flex flex-col flex-grow gap-4">
         <Pagination
           per={per}

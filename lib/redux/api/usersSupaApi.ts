@@ -52,20 +52,27 @@ export const usersSupaApi = createApi({
         list: (User & { UserRole: { Role: { id: number } | null }[] })[];
         count: number;
       },
-      { page: number; perPage: number }
+      { page: number; perPage: number; textSearch: string | undefined | null }
     >({
       queryFn: async (args, api, extraOptions, baseQuery) => {
         const supabase = supaClientHandler;
         const { page, perPage } = args;
         const start = perPage * page;
         const end = perPage * page + perPage;
-        const { data, count, error } = await supabase
+
+        const query = supabase
           .from("User")
           .select("*,UserRole(Role(id))", { count: "exact" })
           .order("firstname")
           .order("lastname")
           .range(start, end)
-          .limit(args.perPage);
+          .limit(perPage);
+
+        if (args.textSearch) {
+          query.textSearch("firstname", args.textSearch.toLocaleLowerCase());
+        }
+
+        const { data, count, error } = await query;
 
         if (error) {
           return { error };

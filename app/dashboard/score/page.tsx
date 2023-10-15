@@ -74,14 +74,15 @@ function page() {
 
   return (
     <div className="flex gap-4 mt-4">
-      <Card className="w-1/2 flex-grow">
+      <Card className="flex-grow w-1/2">
         <CardHeader>
           <CardTitle>Users</CardTitle>
           <CardDescription>Select user to modify score</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col h-full justify-start">
+        <CardContent className="flex flex-col justify-start h-full">
           <ScrollArea className="h-full">
             <GenericUserList
+              search
               per={8}
               singleSelection={user?.id}
               onClick={(user) => {
@@ -91,7 +92,7 @@ function page() {
           </ScrollArea>
         </CardContent>
       </Card>
-      <Card className="w-1/2 flex-grow">
+      <Card className="flex-grow w-1/2">
         <CardHeader>
           <CardTitle>Score</CardTitle>
           <CardDescription>increase or decrease user role.</CardDescription>

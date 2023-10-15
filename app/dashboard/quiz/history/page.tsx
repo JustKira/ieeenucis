@@ -131,7 +131,7 @@ function page() {
                   {selected
                     ? schedules?.find((framework) => framework.id === selected)
                         ?.name
-                    : "Select framework..."}
+                    : "Select Quiz..."}
                   <CaretSortIcon className="w-4 h-4 ml-2 opacity-50 shrink-0" />
                 </Button>
               </PopoverTrigger>

@@ -10,8 +10,8 @@ export async function GET(request: NextRequest) {
   const now = new Date();
   const searchParams = request.nextUrl.searchParams;
 
-  const qid = searchParams.get("qid");
-  if (!qid) {
+  const uid = searchParams.get("uid");
+  if (!uid) {
     return new NextResponse(
       JSON.stringify({
         error: "Sid not provided",
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
     .schema("quizzy")
     .from("UserQuiz")
     .select("*")
-    .eq("id", qid)
+    .eq("id", uid)
 
     .single();
 

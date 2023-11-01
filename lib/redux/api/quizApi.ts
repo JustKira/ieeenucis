@@ -67,7 +67,6 @@ export const quizApi = quizzyApi.injectEndpoints({
     getQuizQuestions: build.query<ApiResponse<QuizQuestion[]>, number>({
       query: (id) => `quiz/${id}/questions`,
     }),
-
     getQuizAnalytics: build.query<
       ApiResponse<{ id: number; analytics: QuizAnalytics }>,
       number
@@ -103,11 +102,18 @@ export const quizApi = quizzyApi.injectEndpoints({
     }),
     recalQuiz: build.mutation<void, number>({
       query: (id) => ({
-        url: `recal/single?qid=${id}`,
+        url: `recal/single?uid=${id}`,
         method: "GET",
       }),
 
-      invalidatesTags: ["user-quiz"],
+      invalidatesTags: ["user-quiz", "history"],
+    }),
+    getQuizScores: build.query<ApiResponse<UserQuiz[]>, number>({
+      query: (id) => ({
+        url: `quiz/${id}/history`,
+        method: "GET",
+      }),
+      providesTags: ["history"],
     }),
   }),
   overrideExisting: false,

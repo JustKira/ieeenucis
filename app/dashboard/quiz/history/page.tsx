@@ -34,9 +34,19 @@ import { User2 } from "lucide-react";
 import { format } from "date-fns";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
+import { quizApi } from "@/lib/redux/api/quizApi";
+
+import {
+  DialogTrigger,
+  Dialog,
+  DialogHeader,
+  DialogContent,
+} from "@/components/ui/dialog";
+import { QuickLoader } from "@/components/ui/loaders";
 
 function page() {
   const supabase = createClientComponentClient<Database>();
+  const [getQuizScores, getQuizScoresRes] = quizApi.useLazyGetQuizScoresQuery();
   const [schedules, setSchedules] = useState<
     | {
         code: string;
@@ -50,6 +60,8 @@ function page() {
   >([]);
   const [open, setOpen] = React.useState(false);
 
+  const [recal, recalRes] = quizApi.useRecalQuizMutation();
+  const [recalFor, setRecalFor] = useState<number | null>(null);
   const [selected, setSelected] = useState<number>();
   const [userQuiz, setUserQuiz] = useState<
     | {
@@ -105,7 +117,7 @@ function page() {
   }, []);
 
   useEffect(() => {
-    if (selected) getUserQuiz(selected);
+    if (selected) getQuizScores(selected);
   }, [selected]);
 
   return (
@@ -177,30 +189,78 @@ function page() {
             </Select> */}
 
             <div className="flex flex-col gap-2 py-2">
-              {userQuiz?.map((d) => {
-                const user = users.find((u) => u.id === d.userId);
+              {getQuizScoresRes.data?.data.map((d) => {
                 return (
-                  <Card className="flex gap-4 px-4 py-2">
-                    <User2 className="w-4" />
-                    <div className="flex gap-2">
-                      <h2 className="w-20 font-light">
-                        {" "}
-                        {d.autoGrade}
-                        {"  /"}
-                        {d.QuizSchedule?.Quiz?.totalMarks}
-                      </h2>
-                      <div className="flex flex-col gap-4 font-medium capitalize">
-                        <h1>
-                          {user?.firstname} {user?.lastname}
-                        </h1>
-                        <h1 className="text-xs">
-                          {d.attendedAt ? (
-                            <> {format(new Date(d.attendedAt), "ppp")}</>
-                          ) : (
-                            <></>
-                          )}
-                        </h1>
+                  <Card className="flex items-center justify-between gap-4 px-4 py-2">
+                    <div className="flex gap-4 px-4 py-2">
+                      <h1>QID {d.id}</h1>
+                      <User2 className="w-4" />
+                      <div className="flex gap-2">
+                        <h2 className="w-20 font-light">
+                          {" "}
+                          {d.autoGrade}
+                          {"  /"}
+                          {d.QuizSchedule?.Quiz?.totalMarks}
+                        </h2>
+                        <div className="flex gap-4 font-medium capitalize">
+                          <h1>
+                            {d.User?.firstname} {d.User?.lastname}
+                          </h1>
+                          <h1 className="text-xs font-light">
+                            {d.attendedAt ? (
+                              <> {format(new Date(d.attendedAt), "ppp")}</>
+                            ) : (
+                              <>Didn't attend</>
+                            )}
+                          </h1>
+                        </div>
                       </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        disabled={
+                          !d.attendedAt ||
+                          (recalRes.isLoading && d.userId === recalFor)
+                        }
+                        variant={"outline"}
+                        onClick={() => {
+                          setRecalFor(d.userId);
+                          recal(d.id);
+                        }}
+                      >
+                        Recalculate{" "}
+                        <QuickLoader
+                          loading={recalRes.isLoading && d.userId === recalFor}
+                        />
+                      </Button>
+                      {/* <Dialog>
+                        <DialogTrigger>
+                          <Button disabled={!d.attendedAt} variant={"outline"}>
+                            Quiz JSON
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>Raw Quiz Answers</DialogHeader>
+                          <pre>{JSON.stringify(d.answers, null, "\t")}</pre>
+                        </DialogContent>
+                      </Dialog> */}
+                      <Dialog>
+                        <DialogTrigger>
+                          <Button
+                            disabled={!d.attendedAt}
+                            variant={"destructive"}
+                          >
+                            Edit
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>Control User Quiz</DialogHeader>
+                          <Button variant={"destructive"}>
+                            Reset Attendance{" "}
+                            <QuickLoader loading={recalRes.isLoading} />
+                          </Button>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </Card>
                 );

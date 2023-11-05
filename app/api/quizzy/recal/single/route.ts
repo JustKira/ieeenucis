@@ -41,14 +41,35 @@ export async function GET(request: NextRequest) {
     .schema("quizzy")
     .from("QuizSchedule")
     .select("*,Quiz(*)")
-    .eq("quizId", ur.quizId)
+    .eq("id", ur.quizScheduleId)
+    .limit(1)
     .single();
 
   const s = quizSchedule.data;
-
-  if (!s) return;
-  if (!s.Quiz) return;
-
+  if (quizSchedule.error) {
+    return new NextResponse(
+      JSON.stringify({
+        ...quizSchedule,
+      }),
+      { status: quizSchedule.status }
+    );
+  }
+  if (!s) {
+    return new NextResponse(
+      JSON.stringify({
+        error: "Schedule",
+      }),
+      { status: 404 }
+    );
+  }
+  if (!s.Quiz) {
+    return new NextResponse(
+      JSON.stringify({
+        error: "Quiz not found",
+      }),
+      { status: 404 }
+    );
+  }
   console.log(usersRes.data);
 
   const quizRes = await supabase
@@ -119,7 +140,9 @@ export async function GET(request: NextRequest) {
                 }
               });
             }
-          } catch (error) {}
+          } catch (error) {
+            console.log(error);
+          }
         }
       });
     } catch (error) {
@@ -137,11 +160,7 @@ export async function GET(request: NextRequest) {
     .then((s) => {
       console.log(s.data?.autoGrade, s.data?.userId);
     });
-  // console.log(`${totalScore} / ${s.Quiz?.totalMarks}`);
+  console.log(`${totalScore} / ${s.Quiz?.totalMarks}`);
 
-  return new NextResponse(
-    JSON.stringify({
-      message: "recal",
-    })
-  );
+  return new NextResponse(JSON.stringify({}));
 }

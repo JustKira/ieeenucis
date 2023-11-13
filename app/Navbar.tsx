@@ -38,6 +38,18 @@ function Navbar() {
           )}
         </div>
         <nav className="flex items-center gap-2 text-sm font-light">
+          <Link href={"/"} className="w-20 mx-4">
+            <img
+              className="block dark:hidden"
+              src="/logo/DC_Donates_logo_regular.png"
+              alt="dc_logo"
+            />
+            <img
+              className="hidden dark:block"
+              src="/logo/DC_Donates_logo_inverted.png"
+              alt="dc_logo"
+            />
+          </Link>
           <Link href={"/"}>
             <Button variant={"link"}>Home </Button>
           </Link>

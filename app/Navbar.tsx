@@ -38,7 +38,7 @@ function Navbar() {
           )}
         </div>
         <nav className="flex items-center gap-2 text-sm font-light">
-          <Link href={"/"} className="w-20 mx-4">
+          <Link href={"https://www.datacamp.com/"} className="w-20 mx-4">
             <img
               className="block dark:hidden"
               src="/logo/DC_Donates_logo_regular.png"
